@@ -1,0 +1,53 @@
+{
+  "run": "gemma2-2b_prompt-fix",
+  "model": "gemma2:2b",
+  "provider": "ollama",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "created": "2026-11-05 19:13",
+  "components": {
+    "entity_resolver": {
+      "cases": 18,
+      "passed": 18,
+      "seconds": 6,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    },
+    "retriever": {
+      "cases": 18,
+      "passed": 17,
+      "seconds": 101,
+      "metrics": {
+        "Result match": {
+          "pass_rate": 0.944,
+          "avg_score": 0.944
+        }
+      }
+    },
+    "router": {
+      "cases": 18,
+      "passed": 18,
+      "seconds": 75,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    },
+    "scope_guard": {
+      "cases": 20,
+      "passed": 20,
+      "seconds": 47,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    }
+  }
+}

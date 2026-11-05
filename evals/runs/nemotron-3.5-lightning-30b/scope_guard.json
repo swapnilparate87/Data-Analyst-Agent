@@ -1,0 +1,276 @@
+{
+  "component": "scope_guard",
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "cases": 20,
+  "passed": 20,
+  "seconds": 19,
+  "metrics": {
+    "Exact match": {
+      "pass_rate": 1.0,
+      "avg_score": 1.0
+    }
+  },
+  "results": [
+    {
+      "input": "How many orders were delivered late?",
+      "actual_output": "in_scope",
+      "expected_output": "in_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'in_scope', got 'in_scope'"
+        }
+      }
+    },
+    {
+      "input": "Give me a report on the health_beauty category",
+      "actual_output": "in_scope",
+      "expected_output": "in_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'in_scope', got 'in_scope'"
+        }
+      }
+    },
+    {
+      "input": "How is Rio de Janeiro performing as a market?",
+      "actual_output": "in_scope",
+      "expected_output": "in_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'in_scope', got 'in_scope'"
+        }
+      }
+    },
+    {
+      "input": "Which 10 sellers made the most revenue in 2018?",
+      "actual_output": "in_scope",
+      "expected_output": "in_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'in_scope', got 'in_scope'"
+        }
+      }
+    },
+    {
+      "input": "What is the average review score in furniture_decor?",
+      "actual_output": "in_scope",
+      "expected_output": "in_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'in_scope', got 'in_scope'"
+        }
+      }
+    },
+    {
+      "input": "Tell me about Minas Gerais",
+      "actual_output": "in_scope",
+      "expected_output": "in_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'in_scope', got 'in_scope'"
+        }
+      }
+    },
+    {
+      "input": "Give me an overview of the marketplace",
+      "actual_output": "in_scope",
+      "expected_output": "in_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'in_scope', got 'in_scope'"
+        }
+      }
+    },
+    {
+      "input": "What share of payments were made with boleto?",
+      "actual_output": "in_scope",
+      "expected_output": "in_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'in_scope', got 'in_scope'"
+        }
+      }
+    },
+    {
+      "input": "Who is the president of Brazil?",
+      "actual_output": "out_of_scope",
+      "expected_output": "out_of_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'out_of_scope', got 'out_of_scope'"
+        }
+      }
+    },
+    {
+      "input": "What's the weather in Sao Paulo today?",
+      "actual_output": "out_of_scope",
+      "expected_output": "out_of_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'out_of_scope', got 'out_of_scope'"
+        }
+      }
+    },
+    {
+      "input": "Write me a python function to sort a list",
+      "actual_output": "out_of_scope",
+      "expected_output": "out_of_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'out_of_scope', got 'out_of_scope'"
+        }
+      }
+    },
+    {
+      "input": "Who won the 2018 World Cup?",
+      "actual_output": "out_of_scope",
+      "expected_output": "out_of_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'out_of_scope', got 'out_of_scope'"
+        }
+      }
+    },
+    {
+      "input": "What is the capital of Australia?",
+      "actual_output": "out_of_scope",
+      "expected_output": "out_of_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'out_of_scope', got 'out_of_scope'"
+        }
+      }
+    },
+    {
+      "input": "Translate 'good morning' into Portuguese",
+      "actual_output": "out_of_scope",
+      "expected_output": "out_of_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'out_of_scope', got 'out_of_scope'"
+        }
+      }
+    },
+    {
+      "input": "How do I cook feijoada?",
+      "actual_output": "out_of_scope",
+      "expected_output": "out_of_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'out_of_scope', got 'out_of_scope'"
+        }
+      }
+    },
+    {
+      "input": "Summarize the history of the Roman Empire",
+      "actual_output": "out_of_scope",
+      "expected_output": "out_of_scope",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'out_of_scope', got 'out_of_scope'"
+        }
+      }
+    },
+    {
+      "input": "What is the profit margin on health_beauty products?",
+      "actual_output": "not_in_data",
+      "expected_output": "not_in_data",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'not_in_data', got 'not_in_data'"
+        }
+      }
+    },
+    {
+      "input": "What are the names of the best selling products?",
+      "actual_output": "not_in_data",
+      "expected_output": "not_in_data",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'not_in_data', got 'not_in_data'"
+        }
+      }
+    },
+    {
+      "input": "Predict next month's revenue",
+      "actual_output": "not_in_data",
+      "expected_output": "not_in_data",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'not_in_data', got 'not_in_data'"
+        }
+      }
+    },
+    {
+      "input": "How many employees does Olist have?",
+      "actual_output": "not_in_data",
+      "expected_output": "not_in_data",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'not_in_data', got 'not_in_data'"
+        }
+      }
+    }
+  ]
+}

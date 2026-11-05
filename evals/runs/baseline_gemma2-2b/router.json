@@ -1,0 +1,250 @@
+{
+  "component": "router",
+  "model": "gemma2:2b",
+  "judge": "mistral",
+  "cases": 18,
+  "passed": 18,
+  "seconds": 104,
+  "metrics": {
+    "Exact match": {
+      "pass_rate": 1.0,
+      "avg_score": 1.0
+    }
+  },
+  "results": [
+    {
+      "input": "Give me a report on the health_beauty category",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "How is Rio de Janeiro performing as a market?",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "Tell me about Minas Gerais",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "Give me an overview of the marketplace",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "Analyze the watches_gifts category",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "How is Curitiba doing?",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "Summarize sales in the state of Bahia",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "Build me a dashboard for computers_accessories",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "Insights on Belo Horizonte",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'"
+        }
+      }
+    },
+    {
+      "input": "How many orders were delivered late?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    },
+    {
+      "input": "Which 10 sellers made the most revenue in 2018?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    },
+    {
+      "input": "What is the average review score in furniture_decor?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    },
+    {
+      "input": "How many orders came from Curitiba?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    },
+    {
+      "input": "Which 5 categories made the most revenue?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    },
+    {
+      "input": "What was the total revenue in 2017?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    },
+    {
+      "input": "Which state has the most orders?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    },
+    {
+      "input": "List the 3 months with the highest revenue",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    },
+    {
+      "input": "Compare revenue in 2017 and 2018",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'"
+        }
+      }
+    }
+  ]
+}

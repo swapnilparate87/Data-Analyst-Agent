@@ -1,0 +1,7 @@
+duckdb>=1.1
+ollama>=0.4
+openai>=1.0                 # NVIDIA API (optional provider and eval judge)
+pandas>=2.2
+plotly>=5.20
+python-dotenv>=1.0
+streamlit>=1.40

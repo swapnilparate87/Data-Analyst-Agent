@@ -1,0 +1,91 @@
+{
+  "run": "baseline_gemma2-2b",
+  "model": "gemma2:2b",
+  "provider": "ollama",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "created": "2026-11-05",
+  "components": {
+    "scope_guard": {
+      "cases": 20,
+      "passed": 20,
+      "seconds": 71,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    },
+    "router": {
+      "cases": 18,
+      "passed": 18,
+      "seconds": 104,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    },
+    "entity_resolver": {
+      "cases": 18,
+      "passed": 17,
+      "seconds": 6,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 0.944,
+          "avg_score": 0.944
+        }
+      }
+    },
+    "retriever": {
+      "cases": 18,
+      "passed": 13,
+      "seconds": 162,
+      "metrics": {
+        "Result match": {
+          "pass_rate": 0.722,
+          "avg_score": 0.775
+        }
+      }
+    },
+    "answer_generator": {
+      "cases": 16,
+      "passed": 7,
+      "seconds": 1505,
+      "metrics": {
+        "Correctness [GEval]": {
+          "pass_rate": 0.562,
+          "avg_score": 0.562
+        },
+        "Faithfulness": {
+          "pass_rate": 0.812,
+          "avg_score": 0.85
+        },
+        "Answer Relevancy": {
+          "pass_rate": 0.938,
+          "avg_score": 0.913
+        }
+      }
+    },
+    "report_generator": {
+      "cases": 15,
+      "passed": 1,
+      "seconds": 1981,
+      "metrics": {
+        "Numbers grounded": {
+          "pass_rate": 0.933,
+          "avg_score": 0.993
+        },
+        "Faithfulness": {
+          "pass_rate": 0.933,
+          "avg_score": 0.911
+        },
+        "Report quality [GEval]": {
+          "pass_rate": 0.067,
+          "avg_score": 0.367
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,3 @@
+-r requirements.txt
+deepeval>=4.3
+pywin32; sys_platform == "win32"  # file locking for deepeval on Windows

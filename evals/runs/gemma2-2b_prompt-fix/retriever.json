@@ -1,0 +1,250 @@
+{
+  "component": "retriever",
+  "model": "gemma2:2b",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "cases": 18,
+  "passed": 17,
+  "seconds": 101,
+  "metrics": {
+    "Result match": {
+      "pass_rate": 0.944,
+      "avg_score": 0.944
+    }
+  },
+  "results": [
+    {
+      "input": "How many orders were delivered late?",
+      "actual_output": "[{\"late_orders\":7827}]",
+      "expected_output": "[{\"count(DISTINCT order_id)\":7827}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "How many orders came from Curitiba?",
+      "actual_output": "[{\"orders\":1510}]",
+      "expected_output": "[{\"count(DISTINCT order_id)\":1510}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "What is the average review score in furniture_decor?",
+      "actual_output": "[{\"avg(review_score)\":3.91}]",
+      "expected_output": "[{\"round(avg(review_score), 2)\":3.91}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "How many unique customers are there?",
+      "actual_output": "[{\"customers\":95420}]",
+      "expected_output": "[{\"count(DISTINCT customer_unique_id)\":95420}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "How many sellers are on the marketplace?",
+      "actual_output": "[{\"sellers\":3095}]",
+      "expected_output": "[{\"count(DISTINCT seller_id)\":3095}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "What was the total revenue in 2017?",
+      "actual_output": "[{\"revenue\":6155806.98}]",
+      "expected_output": "[{\"round(sum(price), 2)\":6108492.27}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "Which 5 categories made the most revenue?",
+      "actual_output": "[{\"category\":\"health_beauty\",\"revenue\":1255695.13},{\"category\":\"watches_gifts\",\"revenue\":1198185.21},{\"category\":\"bed_bath_table\",\"revenue\":1035964.06},{\"category\":\"sports_leisure\",\"revenue\":979740.92},{\"category\":\"computers_accessories\",\"revenue\":904322.02}]",
+      "expected_output": "[{\"category\":\"health_beauty\",\"revenue\":1255695.13},{\"category\":\"watches_gifts\",\"revenue\":1198185.21},{\"category\":\"bed_bath_table\",\"revenue\":1035964.06},{\"category\":\"sports_leisure\",\"revenue\":979740.92},{\"category\":\"computers_accessories\",\"revenue\":904322.02}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "Which state has the most orders?",
+      "actual_output": "[{\"state\":\"SP\",\"orders\":41375}]",
+      "expected_output": "[{\"customer_state\":\"SP\"}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "How many orders were placed in 2018?",
+      "actual_output": "[{\"orders\":53775}]",
+      "expected_output": "[{\"count(DISTINCT order_id)\":53775}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "What is the average freight value per item?",
+      "actual_output": "[{\"avg_freight\":19.99}]",
+      "expected_output": "[{\"round(avg(freight_value), 2)\":19.99}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "Which 10 sellers made the most revenue in 2018?",
+      "actual_output": "[{\"seller_id\":\"4869f7a5dfa277a7dca6462dcf3b52b2\",\"revenue\":138414.6},{\"seller_id\":\"955fee9216a65b617aa5c0531780ce60\",\"revenue\":117328.86},{\"seller_id\":\"7d13fca15225358621be4086e1eb0964\",\"revenue\":113628.97},{\"seller_id\":\"1025f0e2d44d7041d6cf58b6550e0bfa\",\"revenue\":105196.71},{\"seller_id\":\"fa1c13f2614d7b5c4749cbc52fecda94\",\"revenue\":95013.42},{\"seller_id\":\"7c67e1448b00f6e969d365cea6b010ab\",\"revenue\":92746.9},{\"seller_id\":\"da8622b14eb17ae2831f4ac5b9dab84a\",\"revenue\":89450.47},{\"seller_id\":\"4a3ca9315b744ce9f8e9374361493884\",\"revenue\":72741.35},{\"seller_id\":\"6560211a19b47992c3666cc44a7e94c0\",\"revenue\":67411.93},{\"seller_id\":\"edb1ef5e36e0c8cd84eb3c9b003e486d\",\"revenue\":60855.55}]",
+      "expected_output": "[{\"seller_id\":\"4869f7a5dfa277a7dca6462dcf3b52b2\",\"revenue\":138414.6},{\"seller_id\":\"955fee9216a65b617aa5c0531780ce60\",\"revenue\":117328.86},{\"seller_id\":\"7d13fca15225358621be4086e1eb0964\",\"revenue\":113628.97},{\"seller_id\":\"1025f0e2d44d7041d6cf58b6550e0bfa\",\"revenue\":105196.71},{\"seller_id\":\"fa1c13f2614d7b5c4749cbc52fecda94\",\"revenue\":95013.42},{\"seller_id\":\"7c67e1448b00f6e969d365cea6b010ab\",\"revenue\":92746.9},{\"seller_id\":\"da8622b14eb17ae2831f4ac5b9dab84a\",\"revenue\":89450.47},{\"seller_id\":\"4a3ca9315b744ce9f8e9374361493884\",\"revenue\":72741.35},{\"seller_id\":\"6560211a19b47992c3666cc44a7e94c0\",\"revenue\":67411.93},{\"seller_id\":\"edb1ef5e36e0c8cd84eb3c9b003e486d\",\"revenue\":60855.55}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "How many orders were canceled?",
+      "actual_output": "[{\"canceled_orders\":461}]",
+      "expected_output": "[{\"count(DISTINCT order_id)\":461}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "Which city has the most customers?",
+      "actual_output": "[{\"city\":\"sao paulo\",\"customers\":14865}]",
+      "expected_output": "[{\"customer_city\":\"sao paulo\"}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "How many orders came from the state of Rio Grande do Sul?",
+      "actual_output": "[{\"orders\":5432}]",
+      "expected_output": "[{\"count(DISTINCT order_id)\":5432}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "What is the total freight paid by customers in Belo Horizonte?",
+      "actual_output": "[{\"count(DISTINCT sf.order_id)\":2750}]",
+      "expected_output": "[{\"round(sum(freight_value), 2)\":61122.26}]",
+      "passed": false,
+      "metrics": {
+        "Result match": {
+          "score": 0,
+          "passed": false,
+          "reason": "missing [61122.26]"
+        }
+      }
+    },
+    {
+      "input": "How many different products are in the health_beauty category?",
+      "actual_output": "[{\"products\":2444}]",
+      "expected_output": "[{\"count(DISTINCT product_id)\":2444}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "Which month had the highest revenue?",
+      "actual_output": "[{\"month\":\"2017-11-01T00:00:00.000\",\"revenue\":1003862.14}]",
+      "expected_output": "[{\"order_month\":\"2017-11-01T00:00:00.000\"}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    },
+    {
+      "input": "What are the 3 states with the highest share of late deliveries?",
+      "actual_output": "[{\"state\":\"AL\",\"late_delivery_pct\":23.9},{\"state\":\"MA\",\"late_delivery_pct\":19.7},{\"state\":\"PI\",\"late_delivery_pct\":16.0}]",
+      "expected_output": "[{\"customer_state\":\"AL\",\"late_pct\":23.9},{\"customer_state\":\"MA\",\"late_pct\":19.7},{\"customer_state\":\"PI\",\"late_pct\":16.0}]",
+      "passed": true,
+      "metrics": {
+        "Result match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all reference values found"
+        }
+      }
+    }
+  ]
+}

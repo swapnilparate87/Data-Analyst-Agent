@@ -218,3 +218,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local DuckDB built from data/raw
+data/olist.duckdb
+data/olist.tmp
+
+# deepeval cache
+.deepeval/
+
+notebook.ipynb
+/data
+
+BUILD_GUIDE.md

@@ -1,0 +1,22 @@
+[
+  {"input": "How many orders were delivered late?", "expected_output": "in_scope"},
+  {"input": "Give me a report on the health_beauty category", "expected_output": "in_scope"},
+  {"input": "How is Rio de Janeiro performing as a market?", "expected_output": "in_scope"},
+  {"input": "Which 10 sellers made the most revenue in 2018?", "expected_output": "in_scope"},
+  {"input": "What is the average review score in furniture_decor?", "expected_output": "in_scope"},
+  {"input": "Tell me about Minas Gerais", "expected_output": "in_scope"},
+  {"input": "Give me an overview of the marketplace", "expected_output": "in_scope"},
+  {"input": "What share of payments were made with boleto?", "expected_output": "in_scope"},
+  {"input": "Who is the president of Brazil?", "expected_output": "out_of_scope"},
+  {"input": "What's the weather in Sao Paulo today?", "expected_output": "out_of_scope"},
+  {"input": "Write me a python function to sort a list", "expected_output": "out_of_scope"},
+  {"input": "Who won the 2018 World Cup?", "expected_output": "out_of_scope"},
+  {"input": "What is the capital of Australia?", "expected_output": "out_of_scope"},
+  {"input": "Translate 'good morning' into Portuguese", "expected_output": "out_of_scope"},
+  {"input": "How do I cook feijoada?", "expected_output": "out_of_scope"},
+  {"input": "Summarize the history of the Roman Empire", "expected_output": "out_of_scope"},
+  {"input": "What is the profit margin on health_beauty products?", "expected_output": "not_in_data"},
+  {"input": "What are the names of the best selling products?", "expected_output": "not_in_data"},
+  {"input": "Predict next month's revenue", "expected_output": "not_in_data"},
+  {"input": "How many employees does Olist have?", "expected_output": "not_in_data"}
+]

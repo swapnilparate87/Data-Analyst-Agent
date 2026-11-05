@@ -1,0 +1,20 @@
+[
+  {"input": "Give me a report on the health_beauty category", "mode": "detect", "expected_output": "category: health_beauty"},
+  {"input": "How is Rio de Janeiro performing as a market?", "mode": "detect", "expected_output": "city: rio de janeiro"},
+  {"input": "How is the state of Rio de Janeiro performing?", "mode": "detect", "expected_output": "state: RJ"},
+  {"input": "Tell me about Minas Gerais", "mode": "detect", "expected_output": "state: MG"},
+  {"input": "How many orders came from Curitiba?", "mode": "detect", "expected_output": "city: curitiba"},
+  {"input": "Compare SP sales with the rest of Brazil", "mode": "detect", "expected_output": "state: SP"},
+  {"input": "How is São Paulo doing?", "mode": "detect", "expected_output": "city: sao paulo"},
+  {"input": "What is the average review score in furniture_decor?", "mode": "detect", "expected_output": "category: furniture_decor"},
+  {"input": "Insights on Belo Horizonte", "mode": "detect", "expected_output": "city: belo horizonte"},
+  {"input": "How many orders were delivered late?", "mode": "detect", "expected_output": "none"},
+  {"input": "Give me a report on London", "mode": "detect", "expected_output": "none"},
+  {"input": "health beauty", "mode": "resolve", "entity_type": "category", "expected_output": "category: health_beauty"},
+  {"input": "Sao Paolo", "mode": "resolve", "entity_type": "city", "expected_output": "city: sao paulo"},
+  {"input": "Brasília", "mode": "resolve", "entity_type": "city", "expected_output": "city: brasilia"},
+  {"input": "Bahia", "mode": "resolve", "entity_type": "state", "expected_output": "state: BA"},
+  {"input": "rs", "mode": "resolve", "entity_type": "state", "expected_output": "state: RS"},
+  {"input": "Watches and gifts", "mode": "resolve", "entity_type": "category", "expected_output": "category: watches_gifts"},
+  {"input": "Gotham City", "mode": "resolve", "entity_type": "city", "expected_output": "none"}
+]

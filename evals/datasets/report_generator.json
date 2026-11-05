@@ -1,0 +1,17 @@
+[
+  {"input": "Report on the whole marketplace", "entity_type": "none", "entity_value": null},
+  {"input": "Report on health_beauty", "entity_type": "category", "entity_value": "health_beauty"},
+  {"input": "Report on watches_gifts", "entity_type": "category", "entity_value": "watches_gifts"},
+  {"input": "Report on bed_bath_table", "entity_type": "category", "entity_value": "bed_bath_table"},
+  {"input": "Report on computers_accessories", "entity_type": "category", "entity_value": "computers_accessories"},
+  {"input": "Report on toys", "entity_type": "category", "entity_value": "toys"},
+  {"input": "Report on Sao Paulo city", "entity_type": "city", "entity_value": "sao paulo"},
+  {"input": "Report on Rio de Janeiro city", "entity_type": "city", "entity_value": "rio de janeiro"},
+  {"input": "Report on Curitiba", "entity_type": "city", "entity_value": "curitiba"},
+  {"input": "Report on Belo Horizonte", "entity_type": "city", "entity_value": "belo horizonte"},
+  {"input": "Report on Brasilia", "entity_type": "city", "entity_value": "brasilia"},
+  {"input": "Report on Sao Paulo state", "entity_type": "state", "entity_value": "SP"},
+  {"input": "Report on Minas Gerais", "entity_type": "state", "entity_value": "MG"},
+  {"input": "Report on Rio Grande do Sul", "entity_type": "state", "entity_value": "RS"},
+  {"input": "Report on Bahia", "entity_type": "state", "entity_value": "BA"}
+]

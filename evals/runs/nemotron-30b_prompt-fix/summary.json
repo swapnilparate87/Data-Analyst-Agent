@@ -1,0 +1,53 @@
+{
+  "run": "nemotron-30b_prompt-fix",
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "provider": "nvidia",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "created": "2026-11-05 19:12",
+  "components": {
+    "entity_resolver": {
+      "cases": 18,
+      "passed": 18,
+      "seconds": 7,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    },
+    "retriever": {
+      "cases": 18,
+      "passed": 18,
+      "seconds": 89,
+      "metrics": {
+        "Result match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    },
+    "router": {
+      "cases": 18,
+      "passed": 18,
+      "seconds": 29,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    },
+    "scope_guard": {
+      "cases": 20,
+      "passed": 20,
+      "seconds": 40,
+      "metrics": {
+        "Exact match": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,392 @@
+{
+  "component": "answer_generator",
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "cases": 16,
+  "passed": 11,
+  "seconds": 1564,
+  "metrics": {
+    "Correctness [GEval]": {
+      "pass_rate": 0.812,
+      "avg_score": 0.85
+    },
+    "Faithfulness": {
+      "pass_rate": 0.875,
+      "avg_score": 0.894
+    },
+    "Answer Relevancy": {
+      "pass_rate": 1.0,
+      "avg_score": 0.988
+    }
+  },
+  "results": [
+    {
+      "input": "Which 5 categories made the most revenue?",
+      "actual_output": "health_beauty led with R$ 1,255,695.13, followed by watches_gifts at R$ 1,198,185.21. bed_bath_table generated R$ 1,035,964.06, sports_leisure R$ 979,740.92, and computers_accessories R$ 904,322.02.",
+      "expected_output": "[{\"category\":\"health_beauty\",\"revenue\":1255695.13},{\"category\":\"watches_gifts\",\"revenue\":1198185.21},{\"category\":\"bed_bath_table\",\"revenue\":1035964.06},{\"category\":\"sports_leisure\",\"revenue\":979740.92},{\"category\":\"computers_accessories\",\"revenue\":904322.02}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly identifies the top 5 revenue categories in the correct order with matching revenue figures (formatting differences like currency symbol and thousands separators are acceptable per evaluation step 2). It directly answers the question without inventing numbers or merely referencing a table."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions — the actual output perfectly aligns with the retrieval context. Excellent work!"
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response perfectly addresses the question by identifying the top 5 revenue-generating categories with no irrelevant information."
+        }
+      }
+    },
+    {
+      "input": "Which 3 states have the most orders?",
+      "actual_output": "São Paulo leads with 41,375 orders, followed by Rio de Janeiro with 12,762 and Minas Gerais with 11,544.",
+      "expected_output": "[{\"customer_state\":\"SP\",\"orders\":41375},{\"customer_state\":\"RJ\",\"orders\":12762},{\"customer_state\":\"MG\",\"orders\":11544}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly identifies the top three states (São Paulo, Rio de Janeiro, Minas Gerais) with their exact order counts matching the expected output (41,375; 12,762; 11,544) and preserves the correct ranking. No errors or omissions."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response is completely relevant with no irrelevant statements."
+        }
+      }
+    },
+    {
+      "input": "What were the total revenue and number of orders in 2017?",
+      "actual_output": "In 2017, Olist generated R$ 6.11 million in revenue from 44,375 orders.",
+      "expected_output": "[{\"revenue\":6108492.27,\"orders\":44375}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly states the total revenue as R$ 6.11 million (matching the expected 6,108,492.27 when rounded) and the number of orders as 44,375 (exact match). It directly answers the question with accurate figures."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context — no contradictions found! Excellent work maintaining complete faithfulness."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response perfectly addresses the input question with no irrelevant information — excellent work!"
+        }
+      }
+    },
+    {
+      "input": "Compare revenue in 2017 and 2018.",
+      "actual_output": "Revenue increased from R$ 6.11 million in 2017 to R$ 7.34 million in 2018.",
+      "expected_output": "[{\"year\":2017,\"revenue\":6108492.27},{\"year\":2018,\"revenue\":7341182.41}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly states that revenue increased from 2017 to 2018, providing rounded figures (R$ 6.11 million and R$ 7.34 million) that align with the expected values (6,108,492.27 and 7,341,182.41). The answer directly addresses the comparison question with accurate numbers."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response perfectly addresses the comparison of revenue between 2017 and 2018 with no irrelevant content, demonstrating complete relevance and accuracy."
+        }
+      }
+    },
+    {
+      "input": "Which 5 cities have the most customers?",
+      "actual_output": "São Paulo leads with 14,865 customers, followed by Rio de Janeiro with 6,576. Belo Horizonte, Brasília, and Curitiba round out the top five with 2,654, 2,056, and 1,455 customers respectively.",
+      "expected_output": "[{\"customer_city\":\"sao paulo\",\"customers\":14865},{\"customer_city\":\"rio de janeiro\",\"customers\":6576},{\"customer_city\":\"belo horizonte\",\"customers\":2654},{\"customer_city\":\"brasilia\",\"customers\":2056},{\"customer_city\":\"curitiba\",\"customers\":1455}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly identifies the top five cities by customer count, matching the expected output exactly in both city names (allowing for case and accent differences) and numeric values (14,865; 6,576; 2,654; 2,056; 1,455). The order is correct and no figures are invented or misstated."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response directly answers the question with the five cities having the most customers, containing no irrelevant information."
+        }
+      }
+    },
+    {
+      "input": "What is the average review score for each of the top 3 categories by orders?",
+      "actual_output": "The top 3 categories by order volume are bed_bath_table with 9,417 orders and an average review of 3.90, health_beauty with 8,836 orders and an average review of 4.14, and sports_leisure with 7,720 orders and an average review of 4.11.",
+      "expected_output": "[{\"category\":\"bed_bath_table\",\"orders\":9417,\"avg_review\":3.9},{\"category\":\"health_beauty\",\"orders\":8836,\"avg_review\":4.14},{\"category\":\"sports_leisure\",\"orders\":7720,\"avg_review\":4.11}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly identifies the top three categories by order volume (bed_bath_table, health_beauty, sports_leisure) and provides the exact order counts and average review scores that match the expected output (9,417/3.90, 8,836/4.14, 7,720/4.11). All figures align with the expected JSON, and the answer directly addresses the question."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because no contradictions were found between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response is fully relevant with no irrelevant statements, perfectly addressing the query."
+        }
+      }
+    },
+    {
+      "input": "Which 3 states have the slowest average delivery?",
+      "actual_output": "AP and RR are tied for the slowest average delivery at 28.2 days, while AM follows with 26.3 days.",
+      "expected_output": "[{\"customer_state\":\"AP\",\"avg_delivery_days\":28.2},{\"customer_state\":\"RR\",\"avg_delivery_days\":28.2},{\"customer_state\":\"AM\",\"avg_delivery_days\":26.3}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly identifies the three states with the slowest average delivery (AP, RR, AM) and their corresponding average delivery days (28.2, 28.2, 26.3), matching the expected output exactly. It also correctly notes the tie between AP and RR."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions — the actual output aligns perfectly with the retrieval context. Excellent work!"
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response is completely relevant with no irrelevant statements."
+        }
+      }
+    },
+    {
+      "input": "Which 3 states have the fastest average delivery?",
+      "actual_output": "The fastest average delivery times are in São Paulo (R$ 8.7), Paraná (R$ 11.9), and Minas Gerais (R$ 11.9).",
+      "expected_output": "[{\"customer_state\":\"SP\",\"avg_delivery_days\":8.7},{\"customer_state\":\"PR\",\"avg_delivery_days\":11.9},{\"customer_state\":\"MG\",\"avg_delivery_days\":11.9}]",
+      "passed": false,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly lists the three states with the fastest average delivery times: São Paulo (8.7), Paraná (11.9), and Minas Gerais (11.9). These correspond exactly to the expected output's SP (8.7), PR (11.9), and MG (11.9). The numeric values match, and the answer directly addresses the question. The inclusion of 'R$' does not alter the figures."
+        },
+        "Faithfulness": {
+          "score": 0,
+          "passed": false,
+          "reason": "The score is 0.00 because the actual output incorrectly states delivery times in R$ (currency) while the retrieval context explicitly provides average delivery times in days for SP (8.7 days), PR (11.9 days), and MG (11.9 days)."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response directly answers the question with no irrelevant content, showing perfect relevance."
+        }
+      }
+    },
+    {
+      "input": "How many orders were there in each order status?",
+      "actual_output": "The most common status is delivered with 96,478 orders, followed by shipped with 1,106 orders. Canceled orders account for 461, while invoiced and processing each have 312 and 301 orders respectively.",
+      "expected_output": "[{\"order_status\":\"delivered\",\"orders\":96478},{\"order_status\":\"shipped\",\"orders\":1106},{\"order_status\":\"canceled\",\"orders\":461},{\"order_status\":\"invoiced\",\"orders\":312},{\"order_status\":\"processing\",\"orders\":301},{\"order_status\":\"unavailable\",\"orders\":6},{\"order_status\":\"approved\",\"orders\":2}]",
+      "passed": false,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The actual output correctly states the order counts for delivered (96,478), shipped (1,106), canceled (461), invoiced (312), and processing (301), matching the expected output for those statuses. However, it fails to mention the 'unavailable' (6 orders) and 'approved' (2 orders) statuses, which are part of the expected result. Since the question asks for the number of orders in each order status, the answer is incomplete."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response is fully relevant with no irrelevant statements; it perfectly addresses the question."
+        }
+      }
+    },
+    {
+      "input": "What were the 3 best months for revenue?",
+      "actual_output": "Here is the result (see the table above).",
+      "expected_output": "[{\"order_month\":\"2017-11-01T00:00:00.000\",\"revenue\":1003862.14},{\"order_month\":\"2018-04-01T00:00:00.000\",\"revenue\":993592.98},{\"order_month\":\"2018-05-01T00:00:00.000\",\"revenue\":992871.75}]",
+      "passed": false,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 0,
+          "passed": false,
+          "reason": "The actual output does not answer the question; it only says 'Here is the result (see the table above)' without providing any month names or revenue figures. According to the evaluation steps, answers that only point to a table without stating the required information should be penalized, resulting in no alignment."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response is fully relevant with no irrelevant statements; it cannot be higher as 1.00 is the maximum possible score."
+        }
+      }
+    },
+    {
+      "input": "What are the average price and average freight per item in computers_accessories?",
+      "actual_output": "The average price for computers accessories is R$ 116.51, and the average freight per item is R$ 18.82.",
+      "expected_output": "[{\"avg_price\":116.51,\"avg_freight\":18.82}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly reports the average price (R$ 116.51) and average freight per item (R$ 18.82) for computers_accessories, matching the expected output values exactly."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions — the actual output perfectly aligns with the retrieval context. Excellent work!"
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response perfectly addresses the query with accurate average price and freight data for computers_accessories, containing no irrelevant information."
+        }
+      }
+    },
+    {
+      "input": "Which 3 categories have the lowest average review score (with at least 100 orders)?",
+      "actual_output": "office_furniture, fashion_male_clothing, and fixed_telephony have the lowest average review scores at R$3.49, R$3.64, and R$3.68 respectively.",
+      "expected_output": "[{\"category\":\"office_furniture\",\"avg_review\":3.49},{\"category\":\"fashion_male_clothing\",\"avg_review\":3.64},{\"category\":\"fixed_telephony\",\"avg_review\":3.68}]",
+      "passed": false,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly lists the three categories (office_furniture, fashion_male_clothing, fixed_telephony) with their corresponding average review scores (3.49, 3.64, 3.68) exactly as in the expected output. The answer directly addresses the question and all figures match."
+        },
+        "Faithfulness": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The score is 0.50 because the actual output incorrectly identifies fashion_male_clothing as having the lowest average review score (it is actually second lowest) and fixed_telephony as having the lowest (it is actually third lowest), contradicting the retrieval context."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response perfectly addresses the query with no irrelevant content, providing exactly the three categories with the lowest average review scores meeting the order threshold."
+        }
+      }
+    },
+    {
+      "input": "How many orders and how much revenue came from Sao Paulo city?",
+      "actual_output": "There were 15,291 orders from São Paulo, generating R$ 1,897,019.80 in revenue.",
+      "expected_output": "[{\"orders\":15291,\"revenue\":1897019.8}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly states 15,291 orders and R$ 1,897,019.80 revenue, which exactly match the expected output values of 15291 orders and 1897019.8 revenue. The answer directly addresses the question with accurate figures and no invented numbers."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions — a flawless, fully faithful response! 🎉"
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response perfectly addresses the query about orders and revenue from Sao Paulo city with no irrelevant information."
+        }
+      }
+    },
+    {
+      "input": "How many orders were delivered late?",
+      "actual_output": "**Answer: 7,827**",
+      "expected_output": "[{\"late_orders\":7827}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output correctly states the number of late orders as 7,827, which matches the expected output value of 7827 (thousands separator allowed). It directly answers the question without inventing numbers or referencing a table."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the response is fully relevant with no irrelevant statements; it cannot be higher as 1.00 is the maximum possible score."
+        }
+      }
+    },
+    {
+      "input": "What is the average review score in furniture_decor?",
+      "actual_output": "**Answer: 3.91**",
+      "expected_output": "[{\"avg_review\":3.91}]",
+      "passed": true,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The actual output directly answers the question with the correct average review score of 3.91, which matches the expected output value exactly."
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions — a flawless, fully faithful response! 🎉"
+        },
+        "Answer Relevancy": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the answer directly and accurately addresses the question about the average review score in furniture_decor with no irrelevant information."
+        }
+      }
+    },
+    {
+      "input": "How many orders were placed in 2020?",
+      "actual_output": "I don't have enough data to answer that: nothing matched. The data covers Sep 2016 to Oct 2018; check the spelling of any names, or open **SQL used** below to see what was searched.",
+      "expected_output": "[{\"orders\":0}]",
+      "passed": false,
+      "metrics": {
+        "Correctness [GEval]": {
+          "score": 0.1,
+          "passed": false,
+          "reason": "The actual output does not answer the question with the expected figure (0 orders). Instead, it states there is insufficient data and nothing matched, which misrepresents the query result that explicitly returned a zero count. The answer should have indicated zero orders based on the expected output."
+        },
+        "Faithfulness": {
+          "score": 0.8,
+          "passed": true,
+          "reason": "The score is 0.80 because the actual output incorrectly claims the data only covers September 2016 to October 2018, while the retrieval context explicitly states 'In 2020, 0 orders were placed,' indicating data exists for 2020."
+        },
+        "Answer Relevancy": {
+          "score": 0.8,
+          "passed": true,
+          "reason": "The score is 0.80 because the response includes an irrelevant suggestion about checking spelling of names, which does not address the question about 2020 order counts, but the core answer is otherwise relevant."
+        }
+      }
+    }
+  ]
+}

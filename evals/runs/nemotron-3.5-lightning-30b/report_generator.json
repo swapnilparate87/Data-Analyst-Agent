@@ -1,0 +1,369 @@
+{
+  "component": "report_generator",
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "cases": 15,
+  "passed": 7,
+  "seconds": 6101,
+  "metrics": {
+    "Numbers grounded": {
+      "pass_rate": 0.8,
+      "avg_score": 0.981
+    },
+    "Faithfulness": {
+      "pass_rate": 0.933,
+      "avg_score": 0.903
+    },
+    "Report quality [GEval]": {
+      "pass_rate": 0.667,
+      "avg_score": 0.64
+    }
+  },
+  "results": [
+    {
+      "input": "Report on the whole marketplace",
+      "actual_output": "**Key findings**\n- Revenue is heavily concentrated in São Paulo (38%), with São Paulo and Rio de Janeiro together accounting for over half of total sales.\n- Health & beauty and watches/gifts each generate 9% of revenue, indicating a product mix skewed toward personal care and accessories.\n- Late deliveries affect 8.1% of orders, and the average delivery time of 12.4 days represents a potential area for logistics improvement.\n- Year-over-year growth from Jan–Aug 2017 to 2018 surged 138%, signaling strong momentum and expanding marketplace activity.\n\n**Takeaway:** Olist demonstrates robust growth and revenue concentration in key states, but logistics efficiency and product category diversification warrant attention to sustain momentum.",
+      "expected_output": null,
+      "passed": true,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions detected - excellent faithfulness!"
+        },
+        "Report quality [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The response follows the required structure with a 'Key findings' list of four bullets and a one-line 'Takeaway'. Each bullet interprets the retrieval context facts (revenue concentration, product mix, logistics metrics, YoY growth) rather than merely restating them, and all interpretations are directly supported by the provided numbers. No invented figures, contradictions, emojis, or excessive length (well under 150 words) are present."
+        }
+      }
+    },
+    {
+      "input": "Report on health_beauty",
+      "actual_output": "**Key findings**\n- Health & beauty generated R$ 1.26M, representing 9.31% of total marketplace revenue.\n- Revenue grew 211% from Jan-Aug 2017 to Jan-Aug 2018, rising from R$ 247.5K to R$ 770.0K.\n- The category is highly concentrated, with São Paulo contributing R$ 460.5K (37% of state-level revenue).\n- Late deliveries affected 9.0% of orders, exceeding the marketplace average and representing a key area for operational improvement.\n- August 2018 was the peak month, recording R$ 120.5K in revenue and 772 orders.\n\n**Takeaway:** Strong growth and high concentration in São Paulo drive category performance, but elevated late delivery rates require urgent attention to sustain customer satisfaction.",
+      "expected_output": null,
+      "passed": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Report quality [GEval]": {
+          "score": 0.3,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a takeaway, but only one bullet (concentration) provides an interpretation supported by facts; the other four merely restate raw numbers from the retrieval context. Additionally, the bullet on late deliveries claims they exceed the marketplace average, which is not present in the context, constituting an unsupported claim. The word count is within limit and no emojis are used."
+        }
+      }
+    },
+    {
+      "input": "Report on watches_gifts",
+      "actual_output": "**Key findings**\n- Watches & gifts generated R$ 1.20M, representing 8.88% of total marketplace revenue.\n- Revenue grew 243% year-over-year from Jan-Aug 2017 to 2018, driven by a peak in May 2018 (R$ 123.9K).\n- Sales are highly concentrated, with São Paulo state alone contributing R$ 431.1K (36% of total revenue).\n\n**Takeaway:** Strong growth and state-level concentration define the watches & gifts category performance.",
+      "expected_output": null,
+      "passed": true,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment with the source material."
+        },
+        "Report quality [GEval]": {
+          "score": 0.7,
+          "passed": true,
+          "reason": "The output includes a Key findings list of three bullets and a one-line Takeaway, meeting the structural requirement. However, the first bullet merely repeats the revenue figure from the retrieval context without any interpretation (e.g., whether 8.88% is high or low relative to other categories). The second bullet interprets the 243% YoY growth as driven by the May 2018 peak, which is a plausible inference but not explicitly stated in the facts. The third bullet correctly interprets the state-level concentration as 'highly concentrated' and supports it with the 36% figure. No invented numbers, contradictions, emojis, or excessive length are present. Overall, the analysis partially meets the interpretation criterion, leading to a score of 7."
+        }
+      }
+    },
+    {
+      "input": "Report on bed_bath_table",
+      "actual_output": "**Key findings**\n- Bed_bath_table generated R$ 1.04M, representing 7.68% of total marketplace revenue.\n- Revenue grew 107% from Jan-Aug 2017 to Jan-Aug 2018, increasing from R$ 259.6K to R$ 537.5K.\n- The category is highly concentrated, with São Paulo state alone contributing R$ 477.8K (46% of revenue).\n- Despite strong growth, average order value remains low at R$ 110.22, and 8.7% of delivered orders experienced late delivery.\n\n**Takeaway:** Bed_bath_table shows rapid growth and state-level concentration, but low unit values and delivery reliability issues require attention.",
+      "expected_output": null,
+      "passed": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output includes a Key findings list of 4 bullets and a one-line Takeaway, meeting the structural requirement. However, bullets 1 and 2 simply restate facts (total revenue and growth figures) without interpretation. Bullet 4 labels the average order value as 'low' without providing any comparative benchmark, violating the rule that interpretations must be supported by facts. Bullet 3 appropriately interprets concentration with supporting data. No invented numbers, contradictions, emojis, or excessive length are present. Overall, the analysis only partially fulfills the interpretation criterion."
+        }
+      }
+    },
+    {
+      "input": "Report on computers_accessories",
+      "actual_output": "**Key findings**\n- Computers accessories generated R$ 904.3K in revenue, representing 6.7% of total marketplace sales.\n- Revenue grew 129% from Jan-Aug 2017 to Jan-Aug 2018, increasing from R$ 219.6K to R$ 502.4K.\n- Sales are highly concentrated, with São Paulo state contributing R$ 347.2K (38%) and the city of São Paulo R$ 142.5K (16%).\n- Despite high order volume (6,654 orders), the category suffers from a 7.7% late delivery rate and an average delivery time of 13.2 days.\n\n**Takeaway:** Strong year-over-year growth and state-level concentration mask operational challenges in delivery speed and reliability.",
+      "expected_output": null,
+      "passed": true,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Report quality [GEval]": {
+          "score": 0.6,
+          "passed": true,
+          "reason": "The output follows the required structure with a 'Key findings' list of four bullets and a one-line 'Takeaway'. Two bullets (concentration and delivery challenges) interpret the facts and are supported by the retrieval context. However, the first two bullets merely restate raw figures (total revenue and year-over-year growth) without interpretive commentary, which conflicts with the requirement that bullets interpret strengths, weaknesses, concentration, or trends rather than only repeat facts. No invented numbers, contradictions, emojis, or excessive length are present. Overall alignment is moderate."
+        }
+      }
+    },
+    {
+      "input": "Report on toys",
+      "actual_output": "**Key findings**\n- Toys generated R$ 479.8K in revenue, representing 3.56% of total marketplace sales.\n- Revenue grew 42% from Jan-Aug 2017 to Jan-Aug 2018, increasing from R$ 119.7K to R$ 169.7K.\n- Sales are highly concentrated, with São Paulo state contributing R$ 182.9K (38%) and the top three cities accounting for 27% of total revenue.\n- November 2017 was the peak month, generating R$ 64.2K from 450 orders, indicating strong seasonal demand.\n- Late deliveries affected 7.5% of orders, with an average delivery time of 11.6 days.\n\n**Takeaway:** Toys show strong growth and concentration in São Paulo, but delivery performance requires improvement to sustain momentum.",
+      "expected_output": null,
+      "passed": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 0.933,
+          "passed": false,
+          "reason": "not in the data: [27.0]"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment with the source material."
+        },
+        "Report quality [GEval]": {
+          "score": 0.7,
+          "passed": true,
+          "reason": "The output follows the required structure (Key findings with 5 bullets and a one-line Takeaway) and contains no invented numbers, contradictions, emojis, or excessive length. However, three of the five bullets simply restate facts from the retrieval context (revenue share, year-over-year growth, late delivery rate) without adding interpretation such as strengths, weaknesses, or contextual comparison. Only the concentration and seasonal demand bullets provide analysis. This partial adherence to the interpretation requirement reduces alignment with step 3."
+        }
+      }
+    },
+    {
+      "input": "Report on Sao Paulo city",
+      "actual_output": "**Key findings**\n- Sao Paulo generated R$ 1.90M in revenue, representing 14.06% of total marketplace sales.\n- The city shows strong growth, with revenue increasing 185% from Jan-Aug 2017 to 2018 (R$ 392.7K to R$ 1.12M).\n- Health & beauty and home categories dominate, accounting for 19% of total revenue combined.\n\n**Takeaway:** Sao Paulo is a high-revenue, high-growth market with category concentration in health/beauty and home goods.",
+      "expected_output": null,
+      "passed": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 0.875,
+          "passed": false,
+          "reason": "not in the data: [19.0]"
+        },
+        "Faithfulness": {
+          "score": 0.75,
+          "passed": true,
+          "reason": "The score is 0.75 because the actual output incorrectly attributes the total revenue of R$ 1.90M (14.06% of marketplace) to Sao Paulo, while the retrieval context does not make this attribution."
+        },
+        "Report quality [GEval]": {
+          "score": 0.6,
+          "passed": true,
+          "reason": "The output follows the required structure with a 'Key findings' list of three bullets and a one-line 'Takeaway'. All numbers match the retrieval context, and there are no invented figures, contradictions, emojis, or excessive length. However, the first bullet merely restates a fact (revenue and share) without providing an interpretation such as a strength or weakness. Additionally, the analysis does not address any weaknesses from the context (e.g., 6.3% late deliveries, 9% one-star reviews), while the evaluation steps expect bullets to interpret strengths, weaknesses, concentration, and trend. The other two bullets do interpret trend and concentration with support from the facts."
+        }
+      }
+    },
+    {
+      "input": "Report on Rio de Janeiro city",
+      "actual_output": "**Key findings**\n- Rio de Janeiro generates R$ 986.5K in revenue, representing 7.31% of total marketplace sales.\n- The city shows strong growth momentum, with revenue increasing 107% from Jan-Aug 2017 to 2018 (R$ 489.0K).\n- Delivery performance is a key weakness, with late deliveries reaching 11.8% and average delivery time at 14.6 days.\n- Order concentration is evident, as 56% of reviewed orders received 5 stars, while 16% received 1 star.\n\n**Takeaway:** Rio de Janeiro is a high-revenue city with accelerating growth but requires delivery reliability improvements to sustain customer satisfaction.",
+      "expected_output": null,
+      "passed": true,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Report quality [GEval]": {
+          "score": 0.8,
+          "passed": true,
+          "reason": "The output correctly structures a 'Key findings' list of four bullets and a one-line 'Takeaway', stays under 150 words, and contains no invented numbers, contradictions, or emojis. However, the first bullet simply restates a revenue fact (R$ 986.5K, 7.31%) without interpreting it as a strength, weakness, concentration, or trend, which violates the requirement that all bullets interpret the facts. The other three bullets provide supported interpretations (growth momentum, delivery weakness, review concentration)."
+        }
+      }
+    },
+    {
+      "input": "Report on Curitiba",
+      "actual_output": "**Key findings**\n- Curitiba generated R$ 208.0K in revenue, representing 1.54% of marketplace total with an average order value of R$ 138.49.\n- The city shows strong customer satisfaction, with 63% of reviewed orders receiving 5 stars and an average review score of 4.11/5, though 5.0% of deliveries were late.\n- Revenue grew 198% from Jan-Aug 2017 to Jan-Aug 2018 (R$ 41.4K to R$ 123.5K), peaking in April 2018 with R$ 24.1K across 131 orders.\n- Health beauty and sports leisure dominate category performance, contributing R$ 23.0K (11%) and R$ 18.4K (9%) respectively.\n\n**Takeaway:** Curitiba demonstrates robust growth and high satisfaction but requires logistics improvements to reduce the 5.0% late delivery rate.",
+      "expected_output": null,
+      "passed": true,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions — a flawless, fully faithful response! 🎉"
+        },
+        "Report quality [GEval]": {
+          "score": 0.8,
+          "passed": true,
+          "reason": "The output follows the required structure with 4 key findings and a one-line takeaway. Three bullets interpret facts (satisfaction, growth trend, category concentration) and are supported by the retrieval context. However, the first bullet only restates revenue, marketplace share, and average order value without any interpretive insight (e.g., strength/weakness). No invented numbers, contradictions, emojis, or excessive length are present."
+        }
+      }
+    },
+    {
+      "input": "Report on Belo Horizonte",
+      "actual_output": "**Key findings**\n- Belo Horizonte contributes 2.6% of marketplace revenue (R$ 350.8K) with a modest average order value of R$ 128.16.\n- The city shows strong growth, with Jan-Aug 2018 revenue surging 196% year-over-year (R$ 68.1K to R$ 201.5K).\n- Health & beauty dominates category performance, generating R$ 34.0K (10% of local revenue), while late deliveries affect 6.2% of orders.\n- Despite high order volume (2,737 orders), 59% of reviews are 5-star, yet average delivery time remains lengthy at 11.0 days.\n\n**Takeaway:** Belo Horizonte exhibits rapid revenue growth and category concentration, but operational efficiency, specifically delivery speed, requires improvement to sustain customer satisfaction.",
+      "expected_output": null,
+      "passed": true,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Report quality [GEval]": {
+          "score": 0.6,
+          "passed": true,
+          "reason": "The output follows the required structure with 4 key findings and a one-line takeaway, and all cited numbers match the retrieval context. However, several interpretations lack comparative support: 'modest average order value', 'high order volume', and 'lengthy delivery time' are qualitative judgments without benchmarks. Bullet 1 largely repeats facts rather than interpreting them. These issues reduce alignment with the instruction that every interpretation be fact‑supported and that bullets go beyond mere repetition."
+        }
+      }
+    },
+    {
+      "input": "Report on Brasilia",
+      "actual_output": "**Key findings**\n- November 2017 drove 161 orders (R$ 26.9K), representing the city's peak activity.\n- Revenue grew 165% from Jan-Aug 2017 to Jan-Aug 2018 (R$ 62.7K to R$ 166.3K).\n- Watches & gifts and health & beauty together account for 21% of total revenue.\n- 7.1% of delivered orders arrived late, and 11% of reviews were 1-star ratings.\n\n**Takeaway:** Strong growth and category concentration mask persistent delivery and satisfaction challenges.",
+      "expected_output": null,
+      "passed": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 0.909,
+          "passed": false,
+          "reason": "not in the data: [21.0]"
+        },
+        "Faithfulness": {
+          "score": 0,
+          "passed": false,
+          "reason": null
+        },
+        "Report quality [GEval]": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The output follows the required structure with a 'Key findings' list of four bullets (within 3-5) and a one-line 'Takeaway'. Each bullet interprets the retrieval facts (peak month, revenue growth trend, category concentration, late deliveries and low ratings) rather than merely repeating them, and all figures are directly supported by the context. No invented numbers, contradictions, emojis, or excessive word count are present."
+        }
+      }
+    },
+    {
+      "input": "Report on Sao Paulo state",
+      "actual_output": "**Key findings**\n- São Paulo dominates state revenue with R$ 1.90M (37%), while Campinas and Guarulhos contribute 4% and 3% respectively.\n- Revenue grew 166% from Jan-Aug 2017 to 2018, jumping from R$ 1.11M to R$ 2.96M.\n- Late deliveries affect 5.9% of orders, and the average delivery time is 8.7 days.\n- Bed & bath/table and health & beauty categories each generate R$ 477.8K and R$ 460.5K, representing 9% of state revenue each.\n\n**Takeaway:** São Paulo drives the majority of Olist's state revenue, but significant growth and persistent delivery challenges require strategic attention.",
+      "expected_output": null,
+      "passed": true,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 0.8,
+          "passed": true,
+          "reason": "The score is 0.80 because the actual output incorrectly states that São Paulo drives the majority of Olist's state revenue, while the retrieval context shows São Paulo accounts for only 37% of total revenue (not a majority >50%) and does not provide revenue broken down by state."
+        },
+        "Report quality [GEval]": {
+          "score": 0.6,
+          "passed": true,
+          "reason": "The output follows the required structure with 4 key findings and a one-line takeaway. Bullets 1 and 2 interpret concentration and trend using figures from the retrieval context. However, bullets 3 and 4 only repeat facts (late delivery percentage, average delivery time, category revenues) without interpreting them as strengths, weaknesses, or trends. No invented numbers, contradictions, emojis, or text over 150 words are present. The response partially meets the interpretation requirement."
+        }
+      }
+    },
+    {
+      "input": "Report on Minas Gerais",
+      "actual_output": "**Key findings**\n- MG contributes 11.66% of total marketplace revenue with 11,496 orders from 11,134 customers.\n- Revenue is highly concentrated in Belo Horizonte, which accounts for 22% of MG's total revenue.\n- Revenue grew 152% from Jan-Aug 2017 to Jan-Aug 2018, rising from R$ 337.2K to R$ 851.0K.\n- Late deliveries affect 5.6% of orders, and the average delivery time is 11.9 days.\n\n**Takeaway:** MG represents a significant and rapidly growing revenue source, but its performance is heavily dependent on Belo Horizonte and faces logistical challenges with delivery timeliness.",
+      "expected_output": null,
+      "passed": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output follows the required structure with a Key findings list of four bullets and a one-line Takeaway. The Takeaway effectively interprets the facts, highlighting growth, concentration risk, and logistical challenges. However, three of the four Key findings bullets merely restate raw numbers from the retrieval context without adding interpretation (e.g., bullet 1 repeats revenue share, orders, and customers; bullet 3 repeats the 152% growth and absolute values; bullet 4 repeats late delivery rate and average delivery time). Only bullet 2 interprets concentration by noting Belo Horizonte's 22% share. This falls short of step 3, which expects bullets to interpret strengths, weaknesses, concentration, or trends. No invented numbers, contradictions, emojis, or excessive length are present."
+        }
+      }
+    },
+    {
+      "input": "Report on Rio Grande do Sul",
+      "actual_output": "**Key findings**\n- RS generates R$ 742.6K, representing 5.5% of total marketplace revenue.\n- Revenue grew 111% from Jan-Aug 2017 to Jan-Aug 2018, jumping from R$ 181.1K to R$ 382.7K.\n- Porto Alegre dominates the state's revenue with R$ 186.8K (25%), while Caxias do Sul and Santa Maria contribute R$ 38.3K and R$ 31.8K respectively.\n- Late deliveries affect 7.1% of orders, and the average delivery time of 15.1 days exceeds the marketplace standard.\n\n**Takeaway:** RS shows strong growth and concentration in Porto Alegre, but operational delays require attention to sustain momentum.",
+      "expected_output": null,
+      "passed": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions — a flawless, fully faithful response! 🎉"
+        },
+        "Report quality [GEval]": {
+          "score": 0.4,
+          "passed": false,
+          "reason": "The output follows the required structure with 4 key findings and a one-line takeaway, and all cited numbers match the retrieval context. However, the key findings mostly repeat raw facts (revenue, growth, city breakdown, delivery metrics) rather than interpreting them as strengths, weaknesses, concentration, or trends. The only interpretive language — 'dominates' and 'exceeds the marketplace standard' — is either minimally supported or unsupported (no marketplace standard is provided). This falls short of the expectation that bullets interpret facts with supported comparisons."
+        }
+      }
+    },
+    {
+      "input": "Report on Bahia",
+      "actual_output": "**Key findings**\n- Revenue is heavily concentrated in Salvador, which accounts for 36% of total sales despite representing a small share of orders.\n- Late deliveries affect 14% of orders, indicating a significant operational weakness relative to performance.\n- Revenue grew 113% year-to-date through August 2018, driven by strong growth in the health_beauty and watches_gifts categories.\n- The average order value of R$151.65 suggests moderate spending per transaction across the state.\n\n**Takeaway:** Olist must address delivery reliability to sustain the rapid revenue growth seen in BA's top markets and categories.",
+      "expected_output": null,
+      "passed": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data"
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment."
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output follows the required structure with a Key findings list of four bullets and a one-line Takeaway. However, several interpretations are not fully supported by the retrieval context: the claim about Salvador's small order share lacks data, the attribution of 113% revenue growth to health_beauty and watches_gifts categories is not backed by category-level growth figures, and the characterization of the average order value as 'moderate' provides no comparative benchmark. No invented numbers, contradictions, emojis, or excessive length are present."
+        }
+      }
+    }
+  ]
+}
