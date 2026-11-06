@@ -1,0 +1,302 @@
+{
+  "component": "router",
+  "model": "gemma2:2b",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "cases": 19,
+  "passed": 19,
+  "errored": 0,
+  "seconds": 9,
+  "metrics": {
+    "Exact match": {
+      "pass_rate": 1.0,
+      "avg_score": 1.0
+    }
+  },
+  "results": [
+    {
+      "input": "Give me a report on the health_beauty category",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "How is Rio de Janeiro performing as a market?",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Tell me about Minas Gerais",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Give me an overview of the marketplace",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Analyze the watches_gifts category",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "How is Curitiba doing?",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Summarize sales in the state of Bahia",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Build me a dashboard for computers_accessories",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Insights on Belo Horizonte",
+      "actual_output": "report",
+      "expected_output": "report",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'report', got 'report'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Compare SP and RJ",
+      "actual_output": "compare",
+      "expected_output": "compare",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'compare', got 'compare'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "How many orders were delivered late?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Which 10 sellers made the most revenue in 2018?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "What is the average review score in furniture_decor?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "How many orders came from Curitiba?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Which 5 categories made the most revenue?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "What was the total revenue in 2017?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Which state has the most orders?",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "List the 3 months with the highest revenue",
+      "actual_output": "direct",
+      "expected_output": "direct",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'direct', got 'direct'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Compare revenue in 2017 and 2018",
+      "actual_output": "compare",
+      "expected_output": "compare",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'compare', got 'compare'",
+          "error": null
+        }
+      }
+    }
+  ]
+}

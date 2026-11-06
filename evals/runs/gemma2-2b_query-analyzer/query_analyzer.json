@@ -1,0 +1,317 @@
+{
+  "component": "query_analyzer",
+  "model": "gemma2:2b",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "cases": 20,
+  "passed": 20,
+  "errored": 0,
+  "seconds": 8,
+  "metrics": {
+    "Plan match": {
+      "pass_rate": 1.0,
+      "avg_score": 1.0
+    }
+  },
+  "results": [
+    {
+      "input": "How many orders were late, and how is RJ doing?",
+      "actual_output": "[{\"intent\": \"direct\", \"entities\": [], \"focus\": \"sales\", \"periods\": []}, {\"intent\": \"report\", \"entities\": [\"state:RJ\"], \"focus\": \"sales\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"direct\", \"entities\": []}, {\"intent\": \"report\", \"entities\": [\"state:RJ\"], \"focus\": \"sales\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "How many orders and how much revenue came from Curitiba?",
+      "actual_output": "[{\"intent\": \"direct\", \"entities\": [\"city:curitiba\"], \"focus\": \"sales\", \"periods\": []}, {\"intent\": \"direct\", \"entities\": [\"city:curitiba\"], \"focus\": \"sales\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"direct\", \"entities\": [\"city:curitiba\"]}, {\"intent\": \"direct\", \"entities\": [\"city:curitiba\"]}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "1. Which is the most selling product? 2. Give me a report on Curitiba",
+      "actual_output": "[{\"intent\": \"direct\", \"entities\": [], \"focus\": \"sales\", \"periods\": []}, {\"intent\": \"report\", \"entities\": [\"city:curitiba\"], \"focus\": \"sales\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"direct\", \"entities\": []}, {\"intent\": \"report\", \"entities\": [\"city:curitiba\"]}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Tell me about Minas Gerais. Also, which categories have the worst reviews?",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [\"state:MG\"], \"focus\": \"sales\", \"periods\": []}, {\"intent\": \"direct\", \"entities\": [], \"focus\": \"reviews\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [\"state:MG\"]}, {\"intent\": \"direct\", \"entities\": [], \"focus\": \"reviews\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Compare SP and RJ",
+      "actual_output": "[{\"intent\": \"compare\", \"entities\": [\"state:SP\", \"state:RJ\"], \"focus\": \"sales\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"compare\", \"entities\": [\"state:SP\", \"state:RJ\"], \"focus\": \"sales\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Compare revenue in 2017 and 2018",
+      "actual_output": "[{\"intent\": \"compare\", \"entities\": [], \"focus\": \"sales\", \"periods\": [\"2017\", \"2018 (Jan-Aug only)\"]}]",
+      "expected_output": "[{\"intent\": \"compare\", \"entities\": [], \"periods\": [\"2017\", \"2018 (Jan-Aug only)\"]}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "health_beauty vs watches_gifts reviews",
+      "actual_output": "[{\"intent\": \"compare\", \"entities\": [\"category:health_beauty\", \"category:watches_gifts\"], \"focus\": \"reviews\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"compare\", \"entities\": [\"category:health_beauty\", \"category:watches_gifts\"], \"focus\": \"reviews\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Compare Curitiba and Belo Horizonte on deliveries",
+      "actual_output": "[{\"intent\": \"compare\", \"entities\": [\"city:curitiba\", \"city:belo horizonte\"], \"focus\": \"delivery\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"compare\", \"entities\": [\"city:curitiba\", \"city:belo horizonte\"], \"focus\": \"delivery\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "How is the state of Rio de Janeiro doing on deliveries?",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [\"state:RJ\"], \"focus\": \"delivery\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [\"state:RJ\"], \"focus\": \"delivery\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Customer reviews report for watches_gifts in 2018",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [\"category:watches_gifts\"], \"focus\": \"reviews\", \"periods\": [\"2018 (Jan-Aug only)\"]}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [\"category:watches_gifts\"], \"focus\": \"reviews\", \"periods\": [\"2018 (Jan-Aug only)\"]}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on sellers in Curitiba",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [\"city:curitiba\"], \"focus\": \"sellers\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [\"city:curitiba\"], \"focus\": \"sellers\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "How are payments in Bahia?",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [\"state:BA\"], \"focus\": \"payments\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [\"state:BA\"], \"focus\": \"payments\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "health_beauty in SP",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [\"category:health_beauty\", \"state:SP\"], \"focus\": \"sales\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [\"category:health_beauty\", \"state:SP\"]}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Q1 2018 sales report",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [], \"focus\": \"sales\", \"periods\": [\"Q1 2018\"]}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [], \"periods\": [\"Q1 2018\"]}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Who is the president of Brazil?",
+      "actual_output": "[{\"intent\": \"out_of_scope\", \"entities\": [], \"focus\": \"sales\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"out_of_scope\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "What is the profit margin on toys?",
+      "actual_output": "[{\"intent\": \"not_in_data\", \"entities\": [\"category:toys\"], \"focus\": \"sales\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"not_in_data\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Which 10 sellers made the most revenue in 2018?",
+      "actual_output": "[{\"intent\": \"direct\", \"entities\": [], \"focus\": \"sellers\", \"periods\": [\"2018 (Jan-Aug only)\"]}]",
+      "expected_output": "[{\"intent\": \"direct\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "and in 2017?  (after: Tell me about Minas Gerais)",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [\"state:MG\"], \"focus\": \"sales\", \"periods\": [\"2017\"]}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [\"state:MG\"], \"periods\": [\"2017\"]}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "what about deliveries?  (after: Tell me about Minas Gerais)",
+      "actual_output": "[{\"intent\": \"report\", \"entities\": [\"state:MG\"], \"focus\": \"delivery\", \"periods\": []}]",
+      "expected_output": "[{\"intent\": \"report\", \"entities\": [\"state:MG\"], \"focus\": \"delivery\"}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "and in 2017?  (after: How many orders came from Curitiba?)",
+      "actual_output": "[{\"intent\": \"direct\", \"entities\": [\"city:curitiba\"], \"focus\": \"sales\", \"periods\": [\"2017\"]}]",
+      "expected_output": "[{\"intent\": \"direct\", \"entities\": [\"city:curitiba\"], \"periods\": [\"2017\"]}]",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Plan match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "plan matches",
+          "error": null
+        }
+      }
+    }
+  ]
+}

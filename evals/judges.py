@@ -4,12 +4,14 @@ EVAL_JUDGE=nvidia (default when NVIDIA_API_KEY is set): an NVIDIA Nemotron model
 OpenAI-compatible API. EVAL_JUDGE=ollama: a local Ollama model (slow on a small GPU).
 """
 
+import asyncio
 import json
 import os
 import re
+import time
 
 from deepeval.models import DeepEvalBaseLLM, OllamaModel
-from openai import AsyncOpenAI, OpenAI
+from openai import OpenAI, RateLimitError
 from pydantic import BaseModel
 
 from analyst.agent import OLLAMA_HOST
@@ -23,10 +25,8 @@ class NemotronJudge(DeepEvalBaseLLM):
     """deepeval asks for output matching a pydantic schema; we ask for JSON and validate it."""
 
     def __init__(self, model: str = NVIDIA_JUDGE_MODEL):
-        key = os.environ["NVIDIA_API_KEY"]
         self.model_name = model
-        self.client = OpenAI(base_url=NVIDIA_BASE_URL, api_key=key, timeout=180, max_retries=3)
-        self.async_client = AsyncOpenAI(base_url=NVIDIA_BASE_URL, api_key=key, timeout=180, max_retries=3)
+        self.client = OpenAI(base_url=NVIDIA_BASE_URL, api_key=os.environ["NVIDIA_API_KEY"], timeout=180, max_retries=3)
 
     def load_model(self):
         return self.client
@@ -41,14 +41,21 @@ class NemotronJudge(DeepEvalBaseLLM):
         return [{"role": "user", "content": prompt}]
 
     def generate(self, prompt: str, schema: type[BaseModel] | None = None):
-        r = self.client.chat.completions.create(model=self.model_name, messages=self._messages(prompt, schema),
-                                                temperature=0, max_tokens=4096)
-        return _parse(r.choices[0].message.content, schema)
+        # NVIDIA's free tier rate-limits per minute; a judge error would otherwise be scored as a
+        # failure, so wait and retry: 5, 10, 20, 40, then 60 seconds (about 6 minutes in total).
+        for wait in (5, 10, 20, 40, 60, 60, 60, 60, None):
+            try:
+                r = self.client.chat.completions.create(model=self.model_name, messages=self._messages(prompt, schema),
+                                                        temperature=0, max_tokens=4096)
+                return _parse(r.choices[0].message.content, schema)
+            except RateLimitError:
+                if wait is None:
+                    raise
+                time.sleep(wait)
+        raise AssertionError("unreachable")
 
     async def a_generate(self, prompt: str, schema: type[BaseModel] | None = None):
-        r = await self.async_client.chat.completions.create(
-            model=self.model_name, messages=self._messages(prompt, schema), temperature=0, max_tokens=4096)
-        return _parse(r.choices[0].message.content, schema)
+        return await asyncio.to_thread(self.generate, prompt, schema)
 
 
 def _parse(text: str, schema: type[BaseModel] | None):

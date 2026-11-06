@@ -3,11 +3,32 @@
   "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
   "provider": "nvidia",
   "judge": "nvidia/nemotron-3-ultra-550b-a55b",
-  "created": "2026-11-05 19:12",
+  "created": "2026-11-06 12:32",
   "components": {
+    "answer_generator": {
+      "cases": 16,
+      "passed": 16,
+      "errored": 0,
+      "seconds": 2076,
+      "metrics": {
+        "Correctness [GEval]": {
+          "pass_rate": 1.0,
+          "avg_score": 1.0
+        },
+        "Faithfulness": {
+          "pass_rate": 1.0,
+          "avg_score": 0.988
+        },
+        "Answer Relevancy": {
+          "pass_rate": 1.0,
+          "avg_score": 0.984
+        }
+      }
+    },
     "entity_resolver": {
       "cases": 18,
       "passed": 18,
+      "errored": 0,
       "seconds": 7,
       "metrics": {
         "Exact match": {
@@ -16,9 +37,30 @@
         }
       }
     },
+    "report_generator": {
+      "cases": 15,
+      "passed": 5,
+      "errored": 0,
+      "seconds": 1818,
+      "metrics": {
+        "Numbers grounded": {
+          "pass_rate": 0.733,
+          "avg_score": 0.965
+        },
+        "Faithfulness": {
+          "pass_rate": 0.933,
+          "avg_score": 0.973
+        },
+        "Report quality [GEval]": {
+          "pass_rate": 0.533,
+          "avg_score": 0.627
+        }
+      }
+    },
     "retriever": {
       "cases": 18,
       "passed": 18,
+      "errored": 0,
       "seconds": 89,
       "metrics": {
         "Result match": {
@@ -30,6 +72,7 @@
     "router": {
       "cases": 18,
       "passed": 18,
+      "errored": 0,
       "seconds": 29,
       "metrics": {
         "Exact match": {
@@ -41,6 +84,7 @@
     "scope_guard": {
       "cases": 20,
       "passed": 20,
+      "errored": 0,
       "seconds": 40,
       "metrics": {
         "Exact match": {

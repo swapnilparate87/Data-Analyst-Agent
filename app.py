@@ -10,16 +10,19 @@ from dotenv import load_dotenv
 load_dotenv()  # before importing the agent, which reads its settings from the environment
 
 from analyst import db  # noqa: E402
-from analyst.agent import MODEL, OLLAMA_HOST, PROVIDER, REQUEST_TIMEOUT, Analyst, Chart, Report  # noqa: E402
+from analyst.agent import OLLAMA_HOST, PROVIDER, REQUEST_TIMEOUT, Analyst, Chart, Report  # noqa: E402
+
+PROVIDER_NAMES = {"nvidia": "Nemotron 30B (NVIDIA API)", "ollama": "Gemma 2B (local, via Ollama)"}
 
 # Categorical hues in fixed order (validated palette from the dataviz reference).
 SERIES_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]
 
 EXAMPLES = [
     "Give me a report on the health_beauty category",
-    "How is Rio de Janeiro performing as a market?",
-    "Which 10 sellers made the most revenue in 2018?",
-    "How many orders were delivered late?",
+    "How is the state of Rio de Janeiro doing on deliveries?",
+    "Compare SP and RJ",
+    "Which is the most selling product, and how many orders were delivered late?",
+    "Customer reviews report for watches_gifts in 2018",
 ]
 
 st.set_page_config(page_title="Olist Data Analyst", page_icon="📊", layout="wide")
@@ -55,6 +58,13 @@ def figure(chart: Chart):
 
 
 def render(report: Report, key: str):
+    if report.parts:  # a message with several questions: one answer per question
+        for i, (question, part) in enumerate(report.parts):
+            st.markdown(f"#### {i + 1}. {question}")
+            render(part, key=f"{key}-{i}")
+            if i < len(report.parts) - 1:
+                st.divider()
+        return
     if report.kpis:
         cols = st.columns(min(len(report.kpis), 6))
         for i, kpi in enumerate(report.kpis):
@@ -74,6 +84,10 @@ def render(report: Report, key: str):
 
     st.markdown(report.text)
 
+    if report.facts:
+        with st.expander(f"Facts behind this analysis ({len(report.facts)})"):
+            st.markdown("\n".join(f"- {f}" for f in report.facts))
+
     if report.queries:
         with st.expander(f"SQL used ({len(report.queries)} queries)"):
             for purpose, sql, result in report.queries:
@@ -85,20 +99,27 @@ def render(report: Report, key: str):
                     st.caption(f"{len(result):,} rows")
 
 
-st.title("📊 Olist Data Analyst")
-st.caption("Ask about products, categories, cities, states, sellers or time periods. "
-           f"Simple questions get a direct answer; broader ones get a report. Model: `{MODEL}` "
-           + ("(NVIDIA API)" if PROVIDER == "nvidia" else "(local, via Ollama)"))
+with st.sidebar:
+    provider = st.radio("Model", list(PROVIDER_NAMES), index=list(PROVIDER_NAMES).index(PROVIDER),
+                        format_func=PROVIDER_NAMES.get,
+                        help="Nemotron is faster and more accurate; questions and results are sent to NVIDIA. "
+                             "Gemma runs on this computer and needs Ollama.")
 
 if "history" not in st.session_state:
     st.session_state.history = []  # list of (question, Report)
 # Streamlit reloads edited modules on rerun, but an Analyst kept in the session would still run
-# the old code. Rebuild it when the class has changed, keeping the follow-up context.
-if type(st.session_state.get("analyst")) is not Analyst:
-    previous = st.session_state.get("analyst")
+# the old code. Rebuild it when the class or the chosen model has changed, keeping the follow-up context.
+previous = st.session_state.get("analyst")
+if type(previous) is not Analyst or previous.provider != provider:
     with st.spinner("Loading data (first run builds data/olist.duckdb, ~30s)..."):
-        st.session_state.analyst = Analyst(get_connection())
+        st.session_state.analyst = Analyst(get_connection(), provider)
     st.session_state.analyst.history = getattr(previous, "history", [])
+    st.session_state.analyst.last_parts = getattr(previous, "last_parts", [])
+model = st.session_state.analyst.model
+
+st.title("📊 Olist Data Analyst")
+st.caption("Ask about products, categories, cities, states, sellers or time periods. "
+           f"Simple questions get a direct answer; broader ones get a report. Model: `{model}`")
 
 with st.sidebar:
     st.subheader("Try asking")
@@ -106,7 +127,7 @@ with st.sidebar:
         if st.button(example, width="stretch"):
             st.session_state.pending = example
     if st.button("New conversation", type="primary", width="stretch"):
-        st.session_state.analyst = Analyst(get_connection())
+        st.session_state.analyst = Analyst(get_connection(), provider)
         st.session_state.history = []
         st.rerun()
 
@@ -124,20 +145,22 @@ if question:
                 report = st.session_state.analyst.ask(question, on_step=status.write)
             except ConnectionError:
                 status.update(label="Ollama is not running", state="error")
-                st.error(f"Could not reach Ollama at {OLLAMA_HOST}. Start the Ollama app (or `ollama serve`) and retry.")
+                st.error(f"Could not reach Ollama at {OLLAMA_HOST}. Start the Ollama app "
+                         "(or `ollama serve`) and retry, or switch to Nemotron in the sidebar.")
                 st.stop()
             except (httpx.TimeoutException, openai.APITimeoutError):
                 status.update(label="The model took too long", state="error")
-                st.error(f"`{MODEL}` didn't answer within {REQUEST_TIMEOUT:.0f}s. Check that no other program "
+                st.error(f"`{model}` didn't answer within {REQUEST_TIMEOUT:.0f}s. Check that no other program "
                          "is using Ollama (`ollama ps`), then try again or ask a narrower question.")
                 st.stop()
             except openai.APIError as e:
                 status.update(label="NVIDIA API error", state="error")
-                st.error(f"NVIDIA API error: {e}. Check NVIDIA_API_KEY in .env and the model name.")
+                st.error(f"NVIDIA API error: {e}. Check NVIDIA_API_KEY in .env and the model name, "
+                         "or switch to Gemma in the sidebar.")
                 st.stop()
             except ollama.ResponseError as e:
                 status.update(label="Ollama error", state="error")
-                hint = f" Pull it with `ollama pull {MODEL}`." if e.status_code == 404 else ""
+                hint = f" Pull it with `ollama pull {model}`." if e.status_code == 404 else ""
                 st.error(f"Ollama error: {e.error}.{hint}")
                 st.stop()
             status.update(label="Done", state="complete")

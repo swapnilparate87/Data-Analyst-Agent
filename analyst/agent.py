@@ -1,15 +1,17 @@
 """LLM analyst: turns a question into SQL, KPIs, charts and a written answer.
 
-The model runs locally via Ollama (default gemma2:2b) or, with ANALYST_PROVIDER=nvidia, on
-NVIDIA's API (default Nemotron 30B). Small models are unreliable at writing analytical SQL and at
-free-form tool calling, so the model's job is kept narrow, with structured outputs forcing valid JSON:
+The model runs on NVIDIA's API (Nemotron 30B, the default when NVIDIA_API_KEY is set) or locally
+via Ollama (gemma2:2b). ANALYST_PROVIDER picks one; the app can also switch per conversation.
+Small models are unreliable at writing analytical SQL and at free-form tool calling,
+so the model's job is kept narrow, with structured outputs forcing valid JSON:
 
-  1. route  - the model classifies the question: a report about an entity (category, city,
-              state, seller, product, whole marketplace) or a direct question with one SQL query
-  2a. report - the entity name is matched to a real value and prewritten queries compute the
-              KPIs, charts and key facts (analyst/reports.py); the model only writes the narrative
-  2b. direct - we run the model's SQL (failed queries go back to it to fix), then the model
-              answers from the real result
+  1. analyse - the query analyser (analyst/query.py, no model) splits the message into questions
+               and finds each one's intent, places, period and topic
+  2. route   - only questions the analyser can't settle go to the model's router
+  3a. report / compare - prewritten queries compute the KPIs, charts and facts, with benchmarks
+               (analyst/reports.py); the model only writes the narrative
+  3b. direct - SQL from a code template, or written by the model (failed queries go back to it to
+               fix); then the answer is written from the real result
 """
 
 import json
@@ -22,10 +24,13 @@ import ollama
 import pandas as pd
 from openai import OpenAI
 
-from analyst import db, reports
+from analyst import db, query, reports
+from analyst.query import DATA_COVERAGE, DATA_WORDS, DIRECT_START, REPORT_WORDS
 
-PROVIDER = os.getenv("ANALYST_PROVIDER", "ollama")  # "ollama" (local) or "nvidia" (NVIDIA API)
-MODEL = os.getenv("ANALYST_MODEL", "nvidia/nemotron-3.5-lightning-30b-a3b" if PROVIDER == "nvidia" else "gemma2:2b")
+# Provider -> default model. "nvidia" runs on NVIDIA's API, "ollama" runs locally.
+MODELS = {"nvidia": "nvidia/nemotron-3.5-lightning-30b-a3b", "ollama": "gemma2:2b"}
+PROVIDER = os.getenv("ANALYST_PROVIDER", "nvidia" if os.getenv("NVIDIA_API_KEY") else "ollama")
+MODEL = os.getenv("ANALYST_MODEL", MODELS[PROVIDER])
 NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
 # Nemotron is a reasoning model: thinking makes each call 10-100x slower, so it's off by default.
 NVIDIA_THINKING = os.getenv("ANALYST_THINKING", "false").lower() == "true"
@@ -104,55 +109,37 @@ SQL_PROMPT = """Write ONE DuckDB SELECT query FROM sales that answers: {question
 It must return exactly what was asked ("how many" means a count) and add no filters the question \
 doesn't ask for. Use short snake_case aliases. Only the query: no comments or explanation.{hint}"""
 
-ENTITY_HINT = "\nThe question mentions the {entity_type} stored as '{value}': filter with {column} = '{value}'."
+ENTITY_HINT = "\nThe question mentions the {entity_type} stored as {value}: filter with {column} = {value}."
 
 OUT_OF_SCOPE = ("I don't know. I don't have data to answer that: I can only answer questions about "
-                "Olist's Brazilian e-commerce data from Sep 2016 to Oct 2018 (orders, revenue, product "
-                "categories, customer cities and states, sellers, deliveries, payments and reviews).")
+                f"Olist's Brazilian e-commerce data from {DATA_COVERAGE}: orders, revenue, product "
+                "categories, customer cities and states, sellers, deliveries, payments and reviews.")
 
 NOT_IN_DATA = ("I don't have enough data to answer that. The dataset has no profit, margin or cost "
                "figures, product names, marketing, inventory or staff data, and can't forecast the future.")
-# Things people ask about that sound like sales data but aren't in it. Small models answer these
-# anyway with whatever column looks closest (revenue passed off as profit), so catch them first.
-MISSING_DATA = re.compile(
-    r"\b(profits?|profitab\w*|margins?|net income|expenses?|marketing|advertis\w*|inventory|stock levels?|"
-    r"employees?|staff|salar(y|ies)|competitors?|forecast\w*|predict\w*|next (month|year))\b"
-    r"|\bnames?\b.*\bproducts?\b|\bproducts?\b.*\bnames?\b",
-    re.IGNORECASE,
-)
+NO_MATCH = (f"I don't have enough data to answer that: nothing matched. The data covers {DATA_COVERAGE}; "
+            "check the spelling of any names, or open **SQL used** below to see what was searched.")
 
-# Words that tie a question to the data. Questions without them (and without a known city, state
-# or category) are treated as out of scope even when the model tries to write SQL for them.
-DATA_WORDS = re.compile(
-    r"\b(orders?|ordered|revenue|sales|sold|sell(ers?|ing)?|buy(ers?|ing)?|bought|purchases?|customers?|"
-    r"categor(y|ies)|products?|items?|deliver(y|ies|ed)|late|shipping|freight|reviews?|ratings?|"
-    r"payments?|paid|installments?|boleto|credit card|vouchers?|prices?|olist|marketplace|"
-    r"months?|monthly)\b",
-    re.IGNORECASE,
-)
-# Short follow-ups that lean on the previous answer ("and in 2017?", "what about RJ?").
-FOLLOW_UP = re.compile(r"^\s*(and|what about|how about|same|now|only|just|compare|vs|versus)\b", re.IGNORECASE)
-
-# Words that signal a report rather than a narrow question, and openings of narrow questions.
-REPORT_WORDS = re.compile(
-    r"\b(report|overview|summary|summari[sz]e|analy[sz]e|analysis|tell me about|perform|doing|dashboard|insights?)\b",
-    re.IGNORECASE,
-)
-DIRECT_START = re.compile(
-    r"^\s*(how (many|much)|what('s| is| was| are| were)|which|who|when|list|count|top \d+)\b", re.IGNORECASE
-)
 # Numbers, but not the digits inside IDs like 6560211a19b4.
 NUMBER = re.compile(r"(?<![\w.])\d[\d,]*(?:\.\d+)?(?![A-Za-z]*\d)")
+MONEY_COLUMN = re.compile(r"revenue|price|freight|value|total|sales|spent|paid|payment|amount|aov|ticket", re.I)
 
 REPORT_PROMPT = """You are a data analyst for Olist, a Brazilian e-commerce marketplace.
-Write the narrative for a report on {subject}.
+The user asked: "{question}"
+This is a {kind} on {subject}, focused on {focus}.
 
-Facts (all computed from the data):
+Facts, all computed from the data. "vs" gives a comparison; "better"/"worse" says which way is good:
 {facts}
 
-Write markdown: a "**Key findings**" list of 3-5 short bullets that interpret these facts \
-(strengths, weaknesses, concentration, trend), then a one-line "**Takeaway:**". Use only numbers \
-from the facts; do not invent or estimate figures. No title, no emojis, under 150 words."""
+Write markdown with exactly these three parts:
+**Answer:** one or two sentences that directly answer the user's question.
+**Key findings**
+- 3 or 4 bullets. Each one makes a comparison (against the marketplace, the rank among peers, the \
+previous period, or between the items in a breakdown) and says what it means for the business. \
+Don't just repeat a figure.
+**Recommendation:** one concrete next step that addresses the weakest result.
+
+Use only numbers that appear in the facts. No title, no emojis, under 180 words."""
 
 DIRECT_PROMPT = """You are a data analyst for Olist, a Brazilian e-commerce marketplace. \
 Money is in Brazilian reais (R$).
@@ -183,29 +170,31 @@ ROUTE_SCHEMA = {
 SQL_SCHEMA = {"type": "object", "properties": {"sql": {"type": "string"}}, "required": ["sql"]}
 
 
+MESSAGES = {"out_of_scope": OUT_OF_SCOPE, "not_in_data": NOT_IN_DATA}
+
+
 class ModelOutputError(Exception):
     """The local model returned output we couldn't use (e.g. broken JSON)."""
 
 
-def _grounded(answer: str, df: pd.DataFrame, question: str) -> bool:
-    """True if every number in the answer matches a value in the result (or the question).
+def numbers_in(text: str) -> list[float]:
+    return [float(n.replace(",", "")) for n in NUMBER.findall(text)]
 
-    Allows rounding (within 1%) and values written in thousands or millions ("R$ 151 thousand").
-    Also rejects R$ when no result column is money (models write "R$ 28.2" for delivery days).
-    """
-    money = re.compile(r"revenue|price|freight|value|total|sales|spent|paid|payment|amount|aov|ticket", re.I)
-    if "R$" in answer and not any(money.search(str(c)) for c in df.columns):
+
+def unsupported_numbers(text: str, values: list[float]) -> list[float]:
+    """Numbers in the text that match none of the values. Allows rounding (within 1%) and values
+    written in thousands or millions ("R$ 151 thousand"); ignores small whole numbers ("top 3")."""
+    return [n for n in numbers_in(text) if not (n <= 10 and n == int(n))
+            and not any(abs(v / scale - n) <= 0.01 * max(abs(n), 1) for v in values for scale in (1, 1e3, 1e6))]
+
+
+def _grounded(answer: str, df: pd.DataFrame, question: str) -> bool:
+    """True if every number in the answer is in the result (or the question), and R$ is only used
+    when the result has a money column (models write "R$ 28.2" for delivery days)."""
+    if "R$" in answer and not any(MONEY_COLUMN.search(str(c)) for c in df.columns):
         return False
     values = [float(v) for v in df.head(PREVIEW_ROWS).select_dtypes("number").to_numpy().ravel() if pd.notna(v)]
-    values += [float(n.replace(",", "")) for n in NUMBER.findall(question)]
-    for token in NUMBER.findall(answer):
-        n = float(token.replace(",", ""))
-        if n <= 10 and n == int(n):
-            continue  # small counts like "top 3" or "5 stars"
-        if not any(abs(v / scale - n) <= 0.01 * max(abs(n), 1)
-                   for v in values for scale in (1, 1e3, 1e6)):
-            return False
-    return True
+    return not unsupported_numbers(answer, values + numbers_in(question))
 
 
 def _clean_sql(sql: str) -> str:
@@ -244,13 +233,18 @@ class Report:
     kpis: list[dict] = field(default_factory=list)
     charts: list[Chart] = field(default_factory=list)
     queries: list[tuple[str, str, pd.DataFrame | str]] = field(default_factory=list)  # (purpose, sql, df or error)
+    parts: list[tuple[str, "Report"]] = field(default_factory=list)  # (question, answer) when a message has several
+    facts: list[str] = field(default_factory=list)  # what a report's narrative was written from
 
 
 class Analyst:
-    def __init__(self, con: duckdb.DuckDBPyConnection | None = None):
+    def __init__(self, con: duckdb.DuckDBPyConnection | None = None, provider: str = PROVIDER):
         self.con = con or db.connect()
-        if PROVIDER == "nvidia":
-            self.client = OpenAI(base_url=NVIDIA_BASE_URL, api_key=os.getenv("NVIDIA_API_KEY"), timeout=REQUEST_TIMEOUT)
+        self.provider = provider
+        self.model = MODEL if provider == PROVIDER else MODELS[provider]  # ANALYST_MODEL applies to PROVIDER
+        if provider == "nvidia":  # a missing key fails on the first call, with the API's error
+            self.client = OpenAI(base_url=NVIDIA_BASE_URL, api_key=os.getenv("NVIDIA_API_KEY") or "missing",
+                                 timeout=REQUEST_TIMEOUT)
         else:
             self.client = ollama.Client(host=OLLAMA_HOST, timeout=REQUEST_TIMEOUT)
         # Only the tables the model should query: showing raw `products` (product_name_lenght...)
@@ -260,82 +254,124 @@ class Analyst:
         self.route_prompt = ROUTE_PROMPT.format(schema=schema)
         self.sales_columns = ", ".join(self.con.execute("SELECT * FROM sales LIMIT 0").df().columns)
         self.history: list[tuple[str, str]] = []  # (question, answer) for follow-ups
+        self.last_parts: list[query.Part] = []  # the previous message, as analysed
 
     def ask(self, question: str, on_step=None) -> Report:
-        """Answer one question. `on_step(str)` is called with progress messages."""
+        """Answer one message, which may hold several questions. `on_step(str)` gets progress messages."""
         step = on_step or (lambda _: None)
         step("Understanding the question")
-        try:
-            route = self.classify(question)
-            if route["kind"] == "out_of_scope":
-                report = Report(text=OUT_OF_SCOPE)
-            elif route["kind"] == "not_in_data":
-                report = Report(text=NOT_IN_DATA)
-            elif route["kind"] == "report":
-                report = self._report(question, route["entity_type"], route["entity_value"], step)
-            else:
-                report = self._direct(question, route["sql"], step)
-        except ModelOutputError:
-            report = Report(text=f"The local model (`{MODEL}`) returned an unusable response. Try rephrasing the question.")
-        self.history = (self.history + [(question, report.text)])[-HISTORY_TURNS:]
+        parts = self.plan(question)
+        if len(parts) > 1:
+            step(f"Found {len(parts)} questions: " + " | ".join(p.text for p in parts))
+        answers = []
+        for part in parts:
+            try:
+                answers.append(self.run(part, step))
+            except ModelOutputError:
+                answers.append(Report(text=f"The model (`{self.model}`) returned an unusable response. "
+                                           "Try rephrasing the question."))
+        report = answers[0] if len(parts) == 1 else Report(parts=[(p.text, r) for p, r in zip(parts, answers)])
+        text = report.text or "\n\n".join(f"{q}: {r.text}" for q, r in report.parts)
+        self.history = (self.history + [(question, text)])[-HISTORY_TURNS:]
+        self.last_parts = parts
         return report
 
-    # Each step below is a separate component so it can be evaluated on its own (see evals/).
+    def plan(self, question: str) -> list[query.Part]:
+        """The query analyser: split the message and decide where each question goes."""
+        return query.analyze(self.con, question, self.last_parts)
 
-    def classify(self, question: str) -> dict:
-        """Scope check and routing. Returns {kind, entity_type, entity_value, sql} where kind is
-        "out_of_scope", "not_in_data", "report" or "direct"."""
-        route = {"kind": "out_of_scope", "entity_type": "none", "entity_value": "", "sql": ""}
-        # Scope check in two layers. Keywords first: the model will happily write SQL for "who won
-        # the World Cup", so a question that mentions nothing in the data (and isn't a follow-up
-        # like "and in 2017?") is refused without a model call. Then the model's own judgement,
-        # trusted only when no data word backs the question (it sometimes rejects real ones).
-        detected = reports.detect(self.con, question)
-        data_words = bool(DATA_WORDS.search(question))
-        follow_up = bool(self.history and FOLLOW_UP.search(question))
-        has_report_words = bool(REPORT_WORDS.search(question))  # "give me an overview": let the model judge
-        if not (data_words or detected or follow_up or has_report_words):
-            return route
-        if MISSING_DATA.search(question):
-            return {**route, "kind": "not_in_data"}
-        answer = self._chat(question, ROUTE_SCHEMA, system=self.route_prompt, history=True, max_tokens=400)
-        if answer["answer_type"] == "out_of_scope" and not data_words:
-            return route
-        # A "report" with no recognisable entity and no report wording is usually a misrouted
-        # list/count question ("which 10 sellers..."), so answer it directly instead.
-        # Likewise "what is the average review in X" is a narrow question even though it names X.
-        is_report = answer["answer_type"] == "report" and (
-            has_report_words
-            or (not DIRECT_START.search(question) and (detected or answer["entity_type"] != "none"))
-        )
-        return {"kind": "report" if is_report else "direct", "entity_type": answer["entity_type"],
-                "entity_value": answer["entity_value"].strip(), "sql": answer["sql"]}
+    def run(self, part: query.Part, step=lambda _: None) -> Report:
+        """Answer one analysed question."""
+        if part.intent == "unsure":
+            self.route_with_model(part)
+        empty = next((p for p in part.periods if p.get("empty")), None)
+        if part.intent in MESSAGES:
+            return Report(text=MESSAGES[part.intent])
+        if part.intent == "missing_entity":
+            return Report(text=part.query)
+        if empty:
+            return Report(text=f"I don't have enough data for {empty['label']}: the data covers {DATA_COVERAGE}.")
+        if part.intent == "compare":
+            return self._compare(part, step)
+        if part.intent == "report":
+            return self._report(part, step)
+        return self._direct(part.query, part.sql, step)
 
-    def _report(self, question: str, entity_type: str, raw_value: str, step) -> Report:
+    def route_with_model(self, part: query.Part) -> None:
+        """For questions the analyser can't settle from keywords, the model decides (it sees the
+        conversation so far). Sets part.intent, and part.sql or part.entities."""
+        q = part.query
+        answer = self._chat(q, ROUTE_SCHEMA, system=self.route_prompt, history=True, max_tokens=400)
+        # The model sometimes rejects real questions, so "out of scope" counts only without data words.
+        if answer["answer_type"] == "out_of_scope" and not DATA_WORDS.search(q):
+            part.intent = "out_of_scope"
+            return
+        # A "report" with no recognisable entity and no report wording is usually a misrouted list or
+        # count ("which 10 sellers..."); "what is the average review in X" is narrow even though it names X.
+        if not (answer["answer_type"] == "report" and (
+                REPORT_WORDS.search(q) or (not DIRECT_START.search(q) and (part.entities or answer["entity_type"] != "none")))):
+            part.intent, part.sql = "direct", answer["sql"]
+            return
+        part.intent = "report"
+        entity_type, name = answer["entity_type"], answer["entity_value"].strip()
+        if part.entities or entity_type == "none" or not name:
+            return
+        # A name the analyser didn't recognise, e.g. a typo ("Sao Paolo"): match it to the data.
+        value, suggestions = reports.resolve(self.con, entity_type, name)
+        if value:
+            part.entities = [(entity_type, value)]
+        else:
+            hint = f" Did you mean: {', '.join(suggestions)}?" if suggestions else ""
+            part.intent, part.query = "missing_entity", f"I couldn't find a {entity_type} matching **{name}** in the data.{hint}"
+
+    def _report(self, part: query.Part, step) -> Report:
         report = Report()
-        value = None
-        # Small models often miss or mislabel the entity, so prefer a name found verbatim in the question.
-        detected = reports.detect(self.con, question)
-        if detected:
-            entity_type, value = detected
-        elif entity_type != "none":
-            value, suggestions = reports.resolve(self.con, entity_type, raw_value)
-            if value is None:
-                hint = f" Did you mean: {', '.join(suggestions)}?" if suggestions else ""
-                report.text = f"I couldn't find a {entity_type} matching **{raw_value}** in the data.{hint}"
-                return report
-
+        # The report is about the most specific thing named; the others narrow it ("health_beauty in SP").
+        order = {"seller": 0, "product": 1, "category": 2, "city": 3, "state": 4}
+        entities = sorted(part.entities, key=lambda e: order[e[0]])
+        entity_type, value = entities[0] if entities else ("none", None)
+        filters = entities[1:]
         subject = "the whole Olist marketplace" if value is None else f"the {entity_type} **{value}**"
-        step(f"Running report queries for {subject}")
-        report.kpis, report.charts, facts, report.queries = reports.build(self.con, entity_type, value)
-
+        subject += "".join(f" in {v}" for _, v in filters)
+        if part.period:
+            subject += f", {part.period['label']}"
+        step(f"Running {part.focus} report queries for {subject}")
+        report.kpis, report.charts, report.facts, report.queries = reports.build(
+            self.con, entity_type, value, focus=part.focus, period=part.period, filters=filters)
         step("Writing findings")
-        report.text = f"### Report on {subject}\n\n{self.write_narrative(subject, facts)}"
+        title = f"{part.focus.title()} report on {subject}" if part.focus != "sales" else f"Report on {subject}"
+        report.text = f"### {title}\n\n{self.write_narrative(part.text, subject, report.facts, part.focus)}"
         return report
 
-    def write_narrative(self, subject: str, facts: list[str]) -> str:
-        prompt = REPORT_PROMPT.format(subject=subject, facts="\n".join(f"- {f}" for f in facts))
-        return self._chat(prompt, max_tokens=450)
+    def _compare(self, part: query.Part, step) -> Report:
+        report = Report()
+        types = [t for t, _ in part.entities]
+        compared = next((t for t in dict.fromkeys(types) if types.count(t) >= 2), None)
+        if compared:
+            shared = [e for e in part.entities if e[0] != compared]
+            # "SP and RJ in 2017 and 2018": one subject per place and year
+            periods = query.align_years(part.periods) if len(part.periods) > 1 else [part.period]
+            subjects = [{"label": v + (f" {p['label']}" if len(periods) > 1 else ""), "filters": [(t, v)] + shared,
+                         "period": p} for t, v in part.entities if t == compared for p in periods]
+        else:  # comparing periods ("2017 vs 2018")
+            subjects = [{"label": p["label"], "filters": part.entities, "period": p}
+                        for p in query.align_years(part.periods)]
+        if len(subjects) < 2:  # e.g. "what about MG?" after a comparison: nothing to compare with
+            return self._report(part, step)
+        names = " vs ".join(s["label"] for s in subjects)
+        step(f"Comparing {names}")
+        report.kpis, report.charts, report.facts, report.queries = reports.build_compare(
+            self.con, subjects, focus=part.focus)
+        step("Writing findings")
+        narrative = self.write_narrative(part.text, names, report.facts, part.focus, kind="comparison")
+        report.text = f"### Comparison: {names}\n\n{narrative}"
+        return report
+
+    def write_narrative(self, question: str, subject: str, facts: list[str], focus: str = "sales",
+                        kind: str = "report") -> str:
+        prompt = REPORT_PROMPT.format(question=question, subject=subject, focus=focus, kind=kind,
+                                      facts="\n".join(f"- {f}" for f in facts))
+        return self._chat(prompt, max_tokens=550)
 
     def _direct(self, question: str, sql: str, step) -> Report:
         report = Report()
@@ -354,26 +390,18 @@ class Analyst:
         """Get the data for a direct question: finish the SQL, run it, and have the model fix it if
         it fails. Returns (final sql, result or None, [(purpose, sql, df or error)])."""
         queries = []
-        # If the question names a real city/state/category, regenerate the SQL with the exact
-        # stored value and column; small models otherwise guess casing or the wrong column.
         detected = reports.detect(self.con, question)
-        template = reports.template_sql(self.con, question)
-        if template:
+        if template := reports.template_sql(self.con, question):
             sql = template  # plain ranking or count: built in code, no model SQL needed
         elif detected or not sql.strip():
-            hint = ""
+            # Name the stored value and its column; small models otherwise guess casing or the wrong column.
+            entity_type, value = detected or (None, None)
+            hint = ENTITY_HINT.format(entity_type=entity_type, value=reports.sql_str(value), column=reports.ENTITIES[entity_type]) \
+                if detected else ""
+            sql = self._chat(SQL_PROMPT.format(question=question, hint=hint), SQL_SCHEMA,
+                             system=self.route_prompt, max_tokens=400)["sql"]
             if detected:
-                entity_type, value = detected
-                hint = ENTITY_HINT.format(entity_type=entity_type, value=value, column=reports.ENTITIES[entity_type][0])
-            prompt = SQL_PROMPT.format(question=question, hint=hint)
-            sql = self._chat(prompt, SQL_SCHEMA, system=self.route_prompt, max_tokens=400)["sql"]
-            if detected:
-                sql = reports.fix_literal(sql, detected[1])
-        elif self.history:
-            # A follow-up ("and in 2017?") reuses the name as the user typed it earlier ('Curitiba').
-            earlier = reports.detect(self.con, self.history[-1][0])
-            if earlier:
-                sql = reports.fix_literal(sql, earlier[1])
+                sql = reports.fix_literal(sql, value)
         for attempt in range(SQL_FIX_ATTEMPTS + 1):
             sql = _clean_sql(sql)
             try:
@@ -409,9 +437,7 @@ class Analyst:
     def write_answer(self, question: str, sql: str, df: pd.DataFrame) -> str:
         """Turn a query result into the reply text."""
         if df.empty or (df.shape == (1, 1) and df.iat[0, 0] in (0, None)):
-            return ("I don't have enough data to answer that: nothing matched. The data covers "
-                    "Sep 2016 to Oct 2018; check the spelling of any names, or open **SQL used** "
-                    "below to see what was searched.")
+            return NO_MATCH
         if df.shape == (1, 1):
             # A single value needs no model: small models tend to garble units ("R$ 3.91 thousand").
             return f"**Answer: {_fmt(df.iat[0, 0])}**"
@@ -441,17 +467,18 @@ class Analyst:
             for q, a in self.history:
                 messages += [{"role": "user", "content": q}, {"role": "assistant", "content": a}]
         messages.append({"role": "user", "content": prompt})
-        if PROVIDER == "nvidia":
-            extra = {"response_format": {"type": "json_schema", "json_schema": {"name": "output", "schema": schema}}} if schema else {}
+        if self.provider == "nvidia":
+            fmt = {"response_format": {"type": "json_schema", "json_schema": {"name": "output", "schema": schema}}}
             response = self.client.chat.completions.create(
-                model=MODEL, messages=messages, temperature=0, **extra,
+                model=self.model, messages=messages, temperature=0, **(fmt if schema else {}),
                 max_tokens=max_tokens + (4000 if NVIDIA_THINKING else 0),  # thinking counts toward the cap
                 extra_body={"chat_template_kwargs": {"enable_thinking": NVIDIA_THINKING}},
             )
-            content, truncated = (response.choices[0].message.content or "").strip(), response.choices[0].finish_reason == "length"
+            choice = response.choices[0]
+            content, truncated = (choice.message.content or "").strip(), choice.finish_reason == "length"
         else:
             response = self.client.chat(
-                model=MODEL,
+                model=self.model,
                 messages=messages,
                 format=schema,
                 options={"num_ctx": NUM_CTX, "temperature": 0, "num_predict": max_tokens, "repeat_penalty": 1.15},

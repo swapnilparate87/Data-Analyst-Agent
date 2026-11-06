@@ -9,9 +9,8 @@ import re
 from deepeval.metrics import BaseMetric
 from deepeval.test_case import LLMTestCase
 
+from analyst.agent import numbers_in, unsupported_numbers
 from analyst.reports import _norm
-
-NUMBER = re.compile(r"-?(?<![\w.])\d[\d,]*(?:\.\d+)?(?![A-Za-z]*\d)")  # skips digits inside IDs
 
 
 class _CodeMetric(BaseMetric):
@@ -73,27 +72,44 @@ class ResultMatch(_CodeMetric):
         return score, reason
 
 
+class PlanMatch(_CodeMetric):
+    """The query analyser's plan must match the expected one: the same number of questions, and for
+    each question the fields the dataset specifies (intent, entities, focus, periods).
+    Score = share of expected fields that match; a missing or extra question counts as all wrong."""
+
+    name = "Plan match"
+
+    def score_case(self, test_case):
+        expected = json.loads(test_case.expected_output)
+        actual = json.loads(test_case.actual_output)
+        total = sum(len(p) for p in expected) + sum(len(expected[0]) for _ in actual[len(expected):])
+        matched, wrong = 0, []
+        for i, exp in enumerate(expected):
+            act = actual[i] if i < len(actual) else {}
+            for key, value in exp.items():
+                if act.get(key) == value:
+                    matched += 1
+                else:
+                    wrong.append(f"q{i + 1} {key}: expected {value}, got {act.get(key)}")
+        if len(actual) != len(expected):
+            wrong.insert(0, f"expected {len(expected)} questions, got {len(actual)}")
+        return matched / total, "plan matches" if not wrong else "; ".join(wrong)
+
+
 class NumbersGrounded(_CodeMetric):
-    """Every number in the output must appear in the retrieval context (within 1%, or written
-    in thousands/millions). Small numbers (<= 10) are skipped: "top 3", "5 stars"."""
+    """Every number in the output must appear in the retrieval context or the question (the same
+    check the app applies to direct answers). Score = share of numbers that do."""
 
     name = "Numbers grounded"
 
     def score_case(self, test_case):
-        source = [_num(n) for c in test_case.retrieval_context for n in NUMBER.findall(c)]
-        source += [_num(n) for n in NUMBER.findall(test_case.input)]
-        numbers = [_num(n) for n in NUMBER.findall(test_case.actual_output)]
-        numbers = [n for n in numbers if not (abs(n) <= 10 and n == int(n))]
-        made_up = [n for n in numbers
-                   if not any(abs(s / scale - n) <= 0.01 * max(abs(n), 1) for s in source for scale in (1, 1e3, 1e6))]
+        numbers = [n for n in numbers_in(test_case.actual_output) if not (n <= 10 and n == int(n))]
         if not numbers:
             return 1.0, "no numbers to check"
-        score = 1 - len(made_up) / len(numbers)
-        return score, "all numbers come from the data" if not made_up else f"not in the data: {made_up[:5]}"
-
-
-def _num(token: str) -> float:
-    return float(token.replace(",", ""))
+        source = numbers_in(" ".join(test_case.retrieval_context) + " " + test_case.input)
+        made_up = unsupported_numbers(test_case.actual_output, source)
+        reason = f"not in the data: {made_up[:5]}" if made_up else "all numbers come from the data"
+        return 1 - len(made_up) / len(numbers), reason
 
 
 def _values(rows: list[dict]) -> list:

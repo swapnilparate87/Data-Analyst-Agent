@@ -1,0 +1,430 @@
+{
+  "component": "report_generator",
+  "model": "gemma2:2b",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "cases": 15,
+  "passed": 0,
+  "errored": 0,
+  "seconds": 2859,
+  "metrics": {
+    "Numbers grounded": {
+      "pass_rate": 0.933,
+      "avg_score": 0.993
+    },
+    "Faithfulness": {
+      "pass_rate": 1.0,
+      "avg_score": 0.978
+    },
+    "Report quality [GEval]": {
+      "pass_rate": 0.0,
+      "avg_score": 0.427
+    }
+  },
+  "results": [
+    {
+      "input": "Report on the whole marketplace",
+      "actual_output": "* Olist has achieved significant revenue growth year-over-year (138%).\n* The average order value is relatively high at R$ 137.42.\n* Late deliveries represent a challenge with an 8.1% rate of late orders.\n* Health_beauty, watches_gifts, and bed_bath_table are the top revenue-generating categories.\n*  The majority of sales originate from São Paulo (38%), followed by Rio de Janeiro (13%) and Minas Gerais (12%).\n\n**Takeaway:** Olist's marketplace demonstrates strong growth potential with a high average order value, but late deliveries require attention to improve customer satisfaction.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 0.833,
+          "passed": true,
+          "reason": "The score is 0.83 because the actual output incorrectly states that São Paulo's 38% revenue share constitutes a majority, when the retrieval context shows 38% is not a majority (>50%).",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a one-line takeaway. However, only two bullets interpret facts (revenue growth as significant, late deliveries as a challenge), while three bullets merely restate facts without interpretation (average order value labeled 'relatively high' without a comparison, top categories, top states). The 'relatively high' claim lacks supporting context. No invented numbers, contradictions, emojis, or excessive length.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on health_beauty",
+      "actual_output": "* Health & Beauty revenue represents 9.31% of Olist's marketplace sales.\n* Revenue increased by +211% year-over-year in Jan-Aug 2018 compared to the same period in 2017.\n* The category has a high average order value, with an average of R$ 142.69 per order.\n* Late deliveries account for 9.0% of all orders delivered.\n* Top states by revenue are São Paulo (37%), Minas Gerais (13%), and Rio de Janeiro (12%).\n\n**Takeaway:** The Health & Beauty category is a significant contributor to Olist's marketplace, demonstrating strong year-over-year growth and high average order values.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with no contradictions found - excellent faithfulness!",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.4,
+          "passed": false,
+          "reason": "The output follows the required structure with a Key findings list of 5 bullets and a one-line Takeaway, and it contains no invented numbers, contradictions, emojis, or excessive length. However, the bullets largely repeat raw facts from the retrieval context (market share, YoY growth, late delivery rate, top states) rather than interpreting them as strengths, weaknesses, concentration, or trends. The only interpretive bullet calls the average order value 'high' without any comparative benchmark, violating the requirement that interpretations be supported by the facts. The Takeaway also repeats this unsupported 'high' claim. Therefore, the analysis falls short on the core expectation of providing fact‑backed interpretation.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on watches_gifts",
+      "actual_output": "* **Key findings**:\n    * Watches_gifts category generated R$ 1.2M in revenue, representing 8.88% of Olist's marketplace sales.\n    * The average order value is R$ 213.81 with a high customer satisfaction rating (4.03/5).\n    * Late deliveries account for 8.5% of orders, impacting customer experience and potentially leading to negative reviews.\n    * Revenue increased by 243% year-over-year from January to August 2017 to 2018.\n    * The top three states by revenue are São Paulo (R$ 431.1K), Rio de Janeiro (R$ 183.9K) and Minas Gerais (R$ 123.5K).\n\n**Takeaway:**  The Watches_gifts category shows significant growth potential, but late deliveries require attention to improve customer satisfaction and retention.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output shows perfect alignment with the retrieval context, with zero contradictions detected — a flawless demonstration of faithfulness!",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.3,
+          "passed": false,
+          "reason": "The output follows the required structure with Key findings and Takeaway, and uses accurate numbers from the retrieval context. However, four of the five bullets merely repeat facts (revenue, average order value, YoY growth, top states) without interpreting them as strengths, weaknesses, concentration, or trends. The bullet on late deliveries adds an unsupported inference about negative reviews, and the claim of 'high customer satisfaction' lacks a comparative benchmark. This fails step 3's requirement for interpretive, fact‑supported bullets.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on bed_bath_table",
+      "actual_output": "* The category generates significant revenue, representing 7.68% of Olist's total marketplace sales.\n* Revenue growth is strong year-over-year, increasing by 107%.\n*  The average order value is relatively low at R$ 110.22.\n* Late deliveries are a concern, with 8.7% of orders experiencing delays.\n* The category's performance is concentrated in specific states and cities.\n\n**Takeaway:** The \"bed_bath_table\" category on Olist demonstrates strong revenue growth but faces challenges related to late deliveries and order value.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions - a flawless demonstration of faithfulness!",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a one-line takeaway, uses only numbers from the retrieval context, and stays under 150 words. However, four of the five bullets make interpretive claims (e.g., 'significant revenue', 'strong' growth, 'relatively low' order value, 'concern' about late deliveries) without providing any comparative benchmark or contextual support from the facts. Only the concentration bullet is backed by the stated revenue shares. This lack of supported interpretations violates step 3.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on computers_accessories",
+      "actual_output": "* **Computers accessories revenue represents 6.7% of Olist's marketplace.**\n* **Revenue grew by +129% year-over-year in Jan-Aug 2018.**\n* **The category has a high average order value, with an avg. order value of R$ 135.91.**\n* **Late deliveries account for 7.7% of orders.**\n* **Top states by revenue are São Paulo (R$ 347.2K), Rio de Janeiro (R$ 120.0K) and Minas Gerais (R$ 109.9K).**\n\n**Takeaway:**  Computers accessories is a high-growth category for Olist, with strong year-over-year revenue growth. However, late deliveries are a concern that needs to be addressed.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions - the actual output perfectly aligns with the retrieval context! Excellent faithfulness! 🎉",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a takeaway, and all numbers match the retrieval context. However, the bullets largely restate facts (revenue share, YoY growth, late delivery rate, top states) rather than interpret them as strengths, weaknesses, concentration, or trends. The claim of a 'high average order value' is an unsupported interpretation because no comparative benchmark is provided. The takeaway does offer interpretation, but the key findings themselves do not meet the interpretation requirement.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on toys",
+      "actual_output": "* The toys category generated R$479.8K in revenue, representing 3.56% of Olist's marketplace sales.\n*  Orders for toys totaled 3,855 with an average order value of R$124.46.\n* Revenue increased by 42% year-over-year from January to August 2018 compared to the same period in 2017.\n* The top three states for toy sales were São Paulo, Rio de Janeiro and Minas Gerais.\n*  Late deliveries accounted for 7.5% of all delivered orders.\n\n**Takeaway:** Olist's toys category shows strong growth potential with a significant revenue increase year-over-year. However, late delivery rates remain a concern that requires attention to improve customer satisfaction.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment.",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.4,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a takeaway, and all numbers match the retrieval context. However, the bullets simply restate raw facts (revenue, orders, YoY growth, top states, late delivery rate) without interpreting them as strengths, weaknesses, concentration, or trends. The takeaway does provide interpretation, but the key findings bullets should also interpret per the evaluation steps. No invented numbers, emojis, or excessive length.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Sao Paulo city",
+      "actual_output": "* Sao Paulo represents 14% of Olist's total revenue and accounts for 14.76% of customers.\n* Revenue in Sao Paulo has grown significantly year-over-year by +185%.\n* The average order value is R$ 124.06, indicating a moderate price point.\n* Late deliveries are a concern at 6.3%, impacting customer satisfaction and potentially hindering growth.\n* Top categories in Sao Paulo include health_beauty, bed_bath_table, and watches_gifts, suggesting potential for further market expansion within these areas.\n\n**Takeaway:**  Sao Paulo is a significant contributor to Olist's revenue with strong year-over-year growth.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment.",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.4,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a one-line takeaway, and correctly cites key figures like revenue share, YoY growth, average order value, late delivery rate, and top categories. However, it falls short on interpretation: the first bullet only restates facts; the third calls R$124.06 a 'moderate price point' without any comparative benchmark; the fourth labels 6.3% late deliveries a 'concern' without a reference point; the fifth suggests 'potential for further market expansion' without supporting evidence. Additionally, the claim that São Paulo accounts for '14.76% of customers' is an invented percentage not found in the retrieval context. These issues violate steps 3 and 4.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Rio de Janeiro city",
+      "actual_output": "* Rio de Janeiro represents 7.31% of Olist's total revenue.\n* The city has a high customer base with 6,800 orders and an average order value of R$ 145.08.\n* Late deliveries are a concern at 11.8%.\n* Revenue in Rio de Janeiro increased by 107% year-over-year from January to August 2018.\n* The top three revenue categories are watches_gifts, health_beauty, and bed_bath_table.\n\n**Takeaway:**  Rio de Janeiro is a significant market for Olist with strong growth potential but requires attention to late deliveries and customer satisfaction.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions — a flawless, fully faithful response! 🎉",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a one-line takeaway, and it uses numbers from the retrieval context without invention or contradictions. However, the bullets mostly restate facts (revenue share, orders, average order value, YoY growth, top categories) rather than providing interpretive analysis of strengths, weaknesses, concentration, or trends. The few interpretive phrases ('high customer base', 'concern') lack comparative support from the context. The takeaway does offer a supported synthesis, but the key findings fall short of the interpretation expectation.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Curitiba",
+      "actual_output": "* Curitiba generates R$208,000 in revenue, representing 1.54% of Olist's total marketplace sales.\n* The city has a high customer engagement rate with 1,502 orders from 1,447 unique customers.\n* Average order value is R$138.49 and the average review score is 4.11/5 stars.\n* Late deliveries are common in Curitiba at 5% of all delivered orders.\n* Revenue for Curitiba increased by 198% from January to August 2017 to 2018, reaching R$123.5K.\n\n**Takeaway:** Curitiba's Olist marketplace demonstrates strong customer engagement and revenue growth potential with a focus on health_beauty, sports_leisure, and computers_accessories categories.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 0.9,
+          "passed": false,
+          "reason": "not in the data: [208000.0]",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment with the source material.",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.4,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a takeaway, and uses numbers from the retrieval context without invention or contradictions. However, most bullets merely restate facts (revenue, order value, review score, growth) rather than interpreting them as strengths, weaknesses, concentration, or trends. The two interpretive claims — 'high customer engagement rate' and 'late deliveries are common' — lack comparative benchmarks from the context, making them unsupported. The takeaway repeats the unsupported 'strong customer engagement' claim. Overall, the analysis falls short on step 3's interpretation requirement.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Belo Horizonte",
+      "actual_output": "* Belo Horizonte contributes approximately 2.6% of Olist's total revenue.\n* The city has seen a significant increase in revenue year-over-year (196%), with peak month in March 2018 generating R$31.6K.\n* Average order value is relatively high at R$128.16, indicating potential for higher customer spending.\n* Late deliveries are a concern, impacting customer satisfaction and potentially hindering growth.\n* The city's top categories show strong performance in health_beauty, bed_bath_table, and watches_gifts.\n\n**Takeaway:** Belo Horizonte presents significant revenue potential with high average order value but requires addressing late delivery issues to maximize customer satisfaction and further boost sales.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions — a flawless, faithful response! 🎉",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a takeaway, and contains no invented numbers, contradictions, emojis, or excessive length. However, several bullets merely repeat facts (e.g., 2.6% revenue share) or make unsupported qualitative claims (e.g., 'relatively high' average order value without benchmark, 'strong performance' for top categories without comparison, and an unsubstantiated link between late deliveries and customer satisfaction). Only the year-over-year growth bullet provides a clear, fact‑backed interpretation. This partial adherence to step 3 reduces the score.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Brasilia",
+      "actual_output": "* **Brasilia's revenue represents 2.22% of Olist's total.**\n* **Average order value is R$ 142.21 and average review score is 4.02/5.**\n* **Late deliveries account for 7.1% of orders, impacting customer satisfaction.**\n* **Revenue in Brasilia increased by 165% year-over-year from January to August 2018.**\n* **Top categories are watches_gifts, health_beauty and computers_accessories.**\n\n**Takeaway:**  Brasilia's Olist marketplace exhibits strong growth potential with a high average order value. However, late deliveries require attention for customer satisfaction improvement.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment.",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.3,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a one-line takeaway, and all cited numbers match the retrieval context with no invented figures, contradictions, emojis, or excessive length. However, the bullets largely restate raw facts (revenue share, average order value, late delivery rate, YoY growth, top categories) without interpreting them as strengths, weaknesses, concentration, or trends. The takeaway does provide some interpretation, but the evaluation steps require the bullets themselves to interpret the facts, which they do not.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Sao Paulo state",
+      "actual_output": "* **SP accounts for 38.27% of Olist's revenue.**\n* **Average order value is R$ 125.57.**\n* **Late deliveries in SP account for 5.9% of all delivered orders.**\n* **Revenue increased by 166% year-over-year from January to August 2018.**\n* **Sao Paulo accounts for the largest share of revenue (37%) and is a top performing city.**\n\n**Takeaway:**  Olist's São Paulo market demonstrates significant growth potential, with high order volume and strong customer engagement.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 0.833,
+          "passed": true,
+          "reason": "The score is 0.83 because the actual output incorrectly states that São Paulo accounts for 38.27% of Olist's revenue, while the retrieval context indicates that total revenue represents 38.27% of the marketplace and São Paulo's share is 37% of total revenue.",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.3,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a one-line takeaway, but the bullets merely restate facts from the retrieval context (e.g., revenue share 38.27%, avg order value R$125.57, late deliveries 5.9%, YoY growth 166%, São Paulo 37% share) without interpreting them as strengths, weaknesses, concentration, or trends. The takeaway claims 'high order volume' and 'strong customer engagement' without clear support from the bullets. No invented numbers, contradictions, emojis, or excessive length. Failure to provide interpretive analysis per step 3 significantly reduces alignment.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Minas Gerais",
+      "actual_output": "* Revenue in MG represents 11.66% of Olist's total marketplace revenue.\n* The average order value is R$ 136.87 with a high customer base (11,134).\n* Late deliveries are at 5.6%, indicating room for improvement in delivery efficiency.\n* Revenue growth from January to August 2018 was +152% compared to the same period in 2017.\n* Belo Horizonte is the top city by revenue, followed closely by Juiz de Fora and Contagem.\n\n**Takeaway:** Olist's MG market shows significant potential for expansion with a high customer base and strong growth year-over-year.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with zero contradictions — a flawless, fully faithful response! 🎉",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a one-line takeaway, uses only numbers from the retrieval context, and stays well under the word limit. However, four of the five bullets simply restate facts (revenue share, average order value, growth percentage, top cities) without interpretive analysis such as strengths, weaknesses, concentration, or trends. Only the late-delivery bullet and the takeaway provide interpretation, and the claim of a 'high customer base' lacks a comparative benchmark. This partial fulfillment of the interpretation requirement reduces alignment.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Rio Grande do Sul",
+      "actual_output": "* RS revenue represents 5.5% of Olist's total marketplace revenue.\n* The average order value in RS is R$ 137.13.\n* Late deliveries account for 7.1% of orders delivered in the state.\n* Revenue growth from January to August 2018 was +111%, reaching R$ 382.7K compared to R$ 181.1K in the same period in 2017.\n* Porto Alegre generated the highest revenue, followed by Caxias do Sul and Santa Maria.\n\n**Takeaway:**  RS demonstrates strong growth potential for Olist with a significant increase in revenue year-over-year.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because the actual output perfectly aligns with the retrieval context with no contradictions found - excellent faithfulness!",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.4,
+          "passed": false,
+          "reason": "The output follows the required structure with 5 bullets and a one-line takeaway, and contains no invented numbers, contradictions, emojis, or excessive length. However, the bullets merely restate facts from the retrieval context (e.g., revenue share, average order value, late delivery rate, growth figures, top cities) without interpreting them as strengths, weaknesses, concentration, or trends, which violates evaluation step 3. The takeaway does offer an interpretation but the bullets do not.",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "Report on Bahia",
+      "actual_output": "* **BA's revenue is significantly lower than the national average.**  It represents just 3.76% of Olist's total marketplace revenue.\n* **The state has a high number of orders and customers**, with an average order value of R$151.65.\n* **Delivery times are long, with late deliveries accounting for a significant portion (14%).** \n* **July 2018 saw the highest revenue in BA.**  This month also had the most orders.\n* **The top cities by revenue show concentration of activity in Salvador and Feira de Santana.**\n\n**Takeaway:** Olist's business in Bahia is growing, but challenges remain with delivery times and market share.",
+      "expected_output": null,
+      "passed": false,
+      "errored": false,
+      "metrics": {
+        "Numbers grounded": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "all numbers come from the data",
+          "error": null
+        },
+        "Faithfulness": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness and alignment.",
+          "error": null
+        },
+        "Report quality [GEval]": {
+          "score": 0.5,
+          "passed": false,
+          "reason": "The response follows the required structure with 5 bullets and a one-line takeaway, and it avoids invented numbers, emojis, and exceeds the word limit. However, multiple bullets violate step 3: bullet 1 claims revenue is 'significantly lower than the national average' without any national average in the context; bullet 2 calls order volume 'high' without a benchmark; bullet 3 labels delivery times 'long' and 14% 'significant' without comparison; bullet 4 merely repeats the peak-month fact instead of interpreting it. Only bullet 5 offers a supported interpretation (concentration). The takeaway is well grounded. Overall alignment is moderate due to these interpretive shortcomings.",
+          "error": null
+        }
+      }
+    }
+  ]
+}

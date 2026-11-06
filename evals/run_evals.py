@@ -8,13 +8,16 @@ Each run is logged to evals/runs/<run>/: one <component>.json per component (eve
 output, scores and the judge's reasons) and summary.json. Compare two runs with evals/compare.py.
 
 Components and their datasets (evals/datasets/<component>.json):
+  query_analyzer    splitting multi-question messages; intent, places, topic,
+                    period of each question; follow-ups                        (code metric)
   scope_guard       in scope, out of scope, or asks for data we don't have   (code metric)
-  router            report vs direct answer                                   (code metric)
+  router            report vs compare vs direct answer                        (code metric)
   entity_resolver   finding/matching the city, state or category in a question (code metric)
   retriever         the SQL the model writes returns the right data            (code metric)
   answer_generator  the written answer to a direct question, given the
                     correct data (so retriever mistakes don't leak in)        (LLM judge)
-  report_generator  the narrative of a report, given the computed facts       (LLM judge + code)
+  report_generator  the narrative of a report or comparison, for a question,
+                    given the computed facts                                  (LLM judge + code)
 
 The judge for LLM metrics is NVIDIA Nemotron via NVIDIA's API when NVIDIA_API_KEY is set in .env,
 else a local Ollama model (see evals/judges.py). A judge should be much stronger than the gemma2:2b
@@ -43,10 +46,10 @@ from deepeval.evaluate import AsyncConfig, DisplayConfig, ErrorConfig  # noqa: E
 from deepeval.metrics import AnswerRelevancyMetric, FaithfulnessMetric, GEval  # noqa: E402
 from deepeval.test_case import LLMTestCase, SingleTurnParams  # noqa: E402
 
-from analyst import db, reports  # noqa: E402
+from analyst import db, query, reports  # noqa: E402
 from analyst.agent import MODEL, PROVIDER, Analyst, ModelOutputError  # noqa: E402
 from evals.judges import make_judge  # noqa: E402
-from evals.metrics import ExactMatch, NumbersGrounded, ResultMatch  # noqa: E402
+from evals.metrics import ExactMatch, NumbersGrounded, PlanMatch, ResultMatch  # noqa: E402
 
 HERE = Path(__file__).parent
 JUDGE, JUDGE_NAME = make_judge()
@@ -57,19 +60,27 @@ RUN_DIR = HERE / "runs" / RUN_NAME
 def load(component: str) -> EvaluationDataset:
     """Read evals/datasets/<component>.json into goldens; extra keys go to additional_metadata."""
     rows = json.loads((HERE / "datasets" / f"{component}.json").read_text(encoding="utf-8"))
-    goldens = [Golden(input=r["input"], expected_output=r.get("expected_output"),
+    goldens = [Golden(input=r["input"], expected_output=_text(r.get("expected_output")),
                       additional_metadata={k: v for k, v in r.items() if k not in ("input", "expected_output")})
                for r in rows]
     return EvaluationDataset(goldens=goldens)
 
 
-def classify(analyst: Analyst, question: str) -> dict:
-    """The app turns unusable model output into an error message; here it's a failed case."""
-    analyst.history = []
-    try:
-        return analyst.classify(question)
-    except ModelOutputError as e:
-        return {"kind": f"model error: {e}", "sql": ""}
+def _text(value):
+    return value if value is None or isinstance(value, str) else json.dumps(value)
+
+
+def route(analyst: Analyst, question: str):
+    """The app's real routing for a fresh question: the query analyser, then the model's router for
+    what the analyser leaves "unsure". Returns the first question's Part. A model error is a failed case."""
+    analyst.history, analyst.last_parts = [], []
+    part = analyst.plan(question)[0]
+    if part.intent == "unsure":
+        try:
+            analyst.route_with_model(part)
+        except ModelOutputError as e:
+            part.intent = f"model error: {e}"
+    return part
 
 
 def rows_json(df) -> str:
@@ -79,11 +90,25 @@ def rows_json(df) -> str:
 # --- one builder per component: (test cases, metrics) -------------------------------------
 
 
+def query_analyzer(analyst: Analyst, con):
+    """The analyser alone (no model): its plan for each message, compared field by field."""
+    cases = []
+    for g in load("query_analyzer").goldens:
+        previous = g.additional_metadata.get("previous")
+        prev_parts = analyst.plan(previous) if previous else None
+        parts = query.analyze(con, g.input, prev_parts)
+        plan = [{"intent": p.intent, "entities": [f"{t}:{v}" for t, v in p.entities], "focus": p.focus,
+                 "periods": [x["label"] for x in p.periods]} for p in parts]
+        label = g.input if not previous else f"{g.input}  (after: {previous})"
+        cases.append(LLMTestCase(input=label, actual_output=json.dumps(plan), expected_output=g.expected_output))
+    return cases, [PlanMatch()]
+
+
 def scope_guard(analyst: Analyst, con):
     cases = []
     for g in load("scope_guard").goldens:
-        kind = classify(analyst, g.input)["kind"]
-        label = "in_scope" if kind in ("report", "direct") else kind
+        kind = route(analyst, g.input).intent
+        label = "in_scope" if kind in ("report", "direct", "compare", "missing_entity") else kind
         cases.append(LLMTestCase(input=g.input, actual_output=label, expected_output=g.expected_output))
     return cases, [ExactMatch()]
 
@@ -91,7 +116,7 @@ def scope_guard(analyst: Analyst, con):
 def router(analyst: Analyst, con):
     cases = []
     for g in load("router").goldens:
-        kind = classify(analyst, g.input)["kind"]
+        kind = route(analyst, g.input).intent
         cases.append(LLMTestCase(input=g.input, actual_output=kind, expected_output=g.expected_output))
     return cases, [ExactMatch()]
 
@@ -112,14 +137,15 @@ def entity_resolver(analyst: Analyst, con):
 
 
 def retriever(analyst: Analyst, con):
-    """Runs the real path for a direct question: the router's draft SQL, then retrieve() (entity
-    hint, literal fixing, error-fix loop). The result must match the reference query's."""
+    """Runs the real path for a direct question: the analyser (and model router if unsure), then
+    retrieve() (SQL templates, entity hint, literal fixing, error-fix loop). The result must match
+    the reference query's."""
     cases = []
     for g in load("retriever").goldens:
         expected = rows_json(db.run_query(con, g.additional_metadata["reference_sql"]))
-        route = classify(analyst, g.input)
+        part = route(analyst, g.input)
         try:
-            sql, df, _ = analyst.retrieve(g.input, route["sql"] if route["kind"] == "direct" else "")
+            sql, df, _ = analyst.retrieve(part.query or g.input, part.sql if part.intent == "direct" else "")
             actual = rows_json(df) if df is not None else f"query failed: {sql}"
         except ModelOutputError as e:
             sql, actual = "", f"model error: {e}"
@@ -156,13 +182,17 @@ def answer_generator(analyst: Analyst, con):
 
 
 def report_generator(analyst: Analyst, con):
+    """Each question goes through the analyser and the report/comparison builder (all code), then
+    the model writes the narrative, which is scored against the facts it was given."""
     cases = []
     for g in load("report_generator").goldens:
-        meta = g.additional_metadata
-        _, _, facts, _ = reports.build(con, meta["entity_type"], meta["entity_value"])
-        subject = ("the whole Olist marketplace" if meta["entity_type"] == "none"
-                   else f"the {meta['entity_type']} **{meta['entity_value']}**")
-        narrative = analyst.write_narrative(subject, facts)
+        analyst.history, analyst.last_parts = [], []
+        part = analyst.plan(g.input)[0]
+        try:
+            report = analyst.run(part)
+            narrative, facts = report.text, report.facts or ["(no facts: not routed to a report)"]
+        except ModelOutputError as e:
+            narrative, facts = f"model error: {e}", ["(model error)"]
         cases.append(LLMTestCase(input=g.input, actual_output=narrative, retrieval_context=facts))
     model = JUDGE
     quality = GEval(
@@ -170,11 +200,13 @@ def report_generator(analyst: Analyst, con):
         evaluation_steps=[
             "The retrieval context lists the facts computed for the report; the actual output is "
             "the written analysis of them.",
-            "Check that it has a 'Key findings' list of 3-5 bullets followed by a one-line 'Takeaway'.",
-            "Check that the bullets interpret the facts (strengths, weaknesses, concentration, "
-            "trend) instead of only repeating them, and that every interpretation is supported by "
-            "the facts (e.g. it doesn't call a figure high or low without a comparison).",
-            "Penalize invented numbers, contradictions of the facts, emojis, and text over 150 words.",
+            "Check that it starts with an 'Answer' that directly answers the question in the input.",
+            "Check that the 'Key findings' bullets make comparisons supported by the facts (against "
+            "the marketplace, rank among peers, previous period, or within a breakdown) and explain "
+            "what they mean, instead of only repeating figures.",
+            "Check that it ends with one concrete 'Recommendation' that follows from the weakest result.",
+            "Penalize invented numbers, contradictions of the facts, claims not supported by the facts, "
+            "emojis, and text over 180 words.",
         ],
         evaluation_params=[SingleTurnParams.INPUT, SingleTurnParams.ACTUAL_OUTPUT, SingleTurnParams.RETRIEVAL_CONTEXT],
         model=model, threshold=0.6,
@@ -183,7 +215,7 @@ def report_generator(analyst: Analyst, con):
 
 
 COMPONENTS = {f.__name__: f for f in
-              (scope_guard, router, entity_resolver, retriever, answer_generator, report_generator)}
+              (query_analyzer, scope_guard, router, entity_resolver, retriever, answer_generator, report_generator)}
 
 
 def run(component: str, analyst: Analyst, con) -> dict:
@@ -198,15 +230,20 @@ def run(component: str, analyst: Analyst, con) -> dict:
 
     rows, totals = [], {}
     for tr in result.test_results:
-        scores = {m.name: {"score": round(m.score or 0, 3), "passed": m.success, "reason": m.reason}
-                  for m in tr.metrics_data or []}
+        # A metric whose judge call failed (rate limit, bad JSON) has an error and no real score: keep
+        # it out of the averages instead of counting it as a zero.
+        scores = {m.name: {"score": round(m.score or 0, 3), "passed": m.success, "reason": m.reason,
+                           "error": m.error} for m in tr.metrics_data or []}
         for name, s in scores.items():
-            totals.setdefault(name, []).append(s)
-        rows.append({"input": tr.input, "actual_output": tr.actual_output,
-                     "expected_output": tr.expected_output, "passed": tr.success, "metrics": scores})
+            if not s["error"]:
+                totals.setdefault(name, []).append(s)
+        errored = any(s["error"] for s in scores.values())
+        rows.append({"input": tr.input, "actual_output": tr.actual_output, "expected_output": tr.expected_output,
+                     "passed": tr.success and not errored, "errored": errored, "metrics": scores})
     summary = {
         "component": component, "model": MODEL, "judge": JUDGE_NAME, "cases": len(rows),
-        "passed": sum(r["passed"] for r in rows), "seconds": round(time.time() - start),
+        "passed": sum(r["passed"] for r in rows), "errored": sum(r["errored"] for r in rows),
+        "seconds": round(time.time() - start),
         "metrics": {name: {"pass_rate": round(sum(s["passed"] for s in ss) / len(ss), 3),
                            "avg_score": round(sum(s["score"] for s in ss) / len(ss), 3)}
                     for name, ss in totals.items()},
@@ -216,6 +253,10 @@ def run(component: str, analyst: Analyst, con) -> dict:
     (RUN_DIR / f"{component}.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
 
     print(f"{component}: {summary['passed']}/{summary['cases']} cases passed in {summary['seconds']}s")
+    if summary["errored"]:
+        first = next(s["error"] for r in rows for s in r["metrics"].values() if s["error"])
+        print(f"  WARNING: {summary['errored']} cases had judge errors and are not valid results "
+              f"(first error: {str(first)[:200]}). Re-run this component.")
     for name, m in summary["metrics"].items():
         print(f"  {name:<20} pass rate {m['pass_rate']:.0%}   avg score {m['avg_score']:.2f}")
     for r in rows:
@@ -230,6 +271,7 @@ def main(argv: list[str]) -> None:
     unknown = [n for n in names if n not in COMPONENTS]
     if unknown:
         sys.exit(f"Unknown component(s) {unknown}. Choose from: {', '.join(COMPONENTS)}")
+    keep_awake()
     con = db.connect()
     analyst = Analyst(con)
     print(f"Run {RUN_NAME}: model {MODEL} ({PROVIDER}), judge {JUDGE_NAME}")
@@ -240,13 +282,22 @@ def main(argv: list[str]) -> None:
         print(f"{s['component']:<18} {s['passed']:>2}/{s['cases']:<2} passed  ({s['seconds']}s)")
 
 
+def keep_awake() -> None:
+    """Runs take an hour or more; if Windows goes to sleep the run freezes and its API calls break.
+    Ask Windows not to sleep until this process exits (closing a laptop lid can still override it)."""
+    if sys.platform == "win32":
+        import ctypes
+        ES_CONTINUOUS, ES_SYSTEM_REQUIRED = 0x80000000, 0x00000001
+        ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
+
+
 def write_summary() -> None:
     """summary.json: per-component totals for every component logged in this run so far."""
     components = {}
     for f in sorted(RUN_DIR.glob("*.json")):
         if f.name != "summary.json":
             d = json.loads(f.read_text(encoding="utf-8"))
-            components[d["component"]] = {k: d[k] for k in ("cases", "passed", "seconds", "metrics")}
+            components[d["component"]] = {k: d.get(k, 0) for k in ("cases", "passed", "errored", "seconds", "metrics")}
     summary = {"run": RUN_NAME, "model": MODEL, "provider": PROVIDER, "judge": JUDGE_NAME,
                "created": time.strftime("%Y-%m-%d %H:%M"), "components": components}
     (RUN_DIR / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")

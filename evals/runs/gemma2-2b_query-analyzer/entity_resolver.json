@@ -1,0 +1,287 @@
+{
+  "component": "entity_resolver",
+  "model": "gemma2:2b",
+  "judge": "nvidia/nemotron-3-ultra-550b-a55b",
+  "cases": 18,
+  "passed": 18,
+  "errored": 0,
+  "seconds": 9,
+  "metrics": {
+    "Exact match": {
+      "pass_rate": 1.0,
+      "avg_score": 1.0
+    }
+  },
+  "results": [
+    {
+      "input": "[detect] Give me a report on the health_beauty category",
+      "actual_output": "category: health_beauty",
+      "expected_output": "category: health_beauty",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'category: health_beauty', got 'category: health_beauty'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] How is Rio de Janeiro performing as a market?",
+      "actual_output": "city: rio de janeiro",
+      "expected_output": "city: rio de janeiro",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'city: rio de janeiro', got 'city: rio de janeiro'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] How is the state of Rio de Janeiro performing?",
+      "actual_output": "state: RJ",
+      "expected_output": "state: RJ",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'state: RJ', got 'state: RJ'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] Tell me about Minas Gerais",
+      "actual_output": "state: MG",
+      "expected_output": "state: MG",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'state: MG', got 'state: MG'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] How many orders came from Curitiba?",
+      "actual_output": "city: curitiba",
+      "expected_output": "city: curitiba",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'city: curitiba', got 'city: curitiba'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] Compare SP sales with the rest of Brazil",
+      "actual_output": "state: SP",
+      "expected_output": "state: SP",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'state: SP', got 'state: SP'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] How is São Paulo doing?",
+      "actual_output": "city: sao paulo",
+      "expected_output": "city: sao paulo",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'city: sao paulo', got 'city: sao paulo'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] What is the average review score in furniture_decor?",
+      "actual_output": "category: furniture_decor",
+      "expected_output": "category: furniture_decor",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'category: furniture_decor', got 'category: furniture_decor'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] Insights on Belo Horizonte",
+      "actual_output": "city: belo horizonte",
+      "expected_output": "city: belo horizonte",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'city: belo horizonte', got 'city: belo horizonte'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] How many orders were delivered late?",
+      "actual_output": "none",
+      "expected_output": "none",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'none', got 'none'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[detect] Give me a report on London",
+      "actual_output": "none",
+      "expected_output": "none",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'none', got 'none'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[resolve] health beauty",
+      "actual_output": "category: health_beauty",
+      "expected_output": "category: health_beauty",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'category: health_beauty', got 'category: health_beauty'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[resolve] Sao Paolo",
+      "actual_output": "city: sao paulo",
+      "expected_output": "city: sao paulo",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'city: sao paulo', got 'city: sao paulo'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[resolve] Brasília",
+      "actual_output": "city: brasilia",
+      "expected_output": "city: brasilia",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'city: brasilia', got 'city: brasilia'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[resolve] Bahia",
+      "actual_output": "state: BA",
+      "expected_output": "state: BA",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'state: BA', got 'state: BA'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[resolve] rs",
+      "actual_output": "state: RS",
+      "expected_output": "state: RS",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'state: RS', got 'state: RS'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[resolve] Watches and gifts",
+      "actual_output": "category: watches_gifts",
+      "expected_output": "category: watches_gifts",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'category: watches_gifts', got 'category: watches_gifts'",
+          "error": null
+        }
+      }
+    },
+    {
+      "input": "[resolve] Gotham City",
+      "actual_output": "none",
+      "expected_output": "none",
+      "passed": true,
+      "errored": false,
+      "metrics": {
+        "Exact match": {
+          "score": 1.0,
+          "passed": true,
+          "reason": "expected 'none', got 'none'",
+          "error": null
+        }
+      }
+    }
+  ]
+}

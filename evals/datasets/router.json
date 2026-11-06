@@ -8,6 +8,7 @@
   {"input": "Summarize sales in the state of Bahia", "expected_output": "report"},
   {"input": "Build me a dashboard for computers_accessories", "expected_output": "report"},
   {"input": "Insights on Belo Horizonte", "expected_output": "report"},
+  {"input": "Compare SP and RJ", "expected_output": "compare"},
   {"input": "How many orders were delivered late?", "expected_output": "direct"},
   {"input": "Which 10 sellers made the most revenue in 2018?", "expected_output": "direct"},
   {"input": "What is the average review score in furniture_decor?", "expected_output": "direct"},
@@ -16,5 +17,5 @@
   {"input": "What was the total revenue in 2017?", "expected_output": "direct"},
   {"input": "Which state has the most orders?", "expected_output": "direct"},
   {"input": "List the 3 months with the highest revenue", "expected_output": "direct"},
-  {"input": "Compare revenue in 2017 and 2018", "expected_output": "direct"}
+  {"input": "Compare revenue in 2017 and 2018", "expected_output": "compare"}
 ]
